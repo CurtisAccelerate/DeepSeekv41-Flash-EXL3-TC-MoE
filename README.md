@@ -12,10 +12,11 @@ and the measurements.
 
 On that machine the shipped stack does **178.3 tok/s** structured decode,
 **587 tok/s** across 8 users, and a median time to first token of **8.37 s**
-from 2K through 255K context (10.9 s at 255,424 tokens). Full CUDA graphs and
-NCCL on the same box, before this port, were 172.7 tok/s, 456 tok/s at 8
-users, and 10.15 s. Needles passed 9/9 through 256K. The KV pool is 616,916
-tokens.
+from 2K through 255K context (10.9 s at 255,424 tokens). The numbers it is
+compared with are the optimized stack already in service on this host:
+full CUDA graphs, coop, and NCCL. Coop is part of that optimization. It is
+not an untouched default. That stack did 172.7 tok/s, 456 tok/s at 8 users,
+and 10.15 s. Needles passed 9/9 through 256K. The KV pool is 616,916 tokens.
 
 The port:
 
@@ -44,7 +45,7 @@ checkpoint credit are in [NOTICE.md](NOTICE.md).
 
 | Rows | Kernel |
 |---:|---|
-| 1–42 | existing `exl3_moe_coop` (`tokens * topk <= 256` at top-6) |
+| 1–42 | coop, kept from the optimized stack (`tokens * topk <= 256` at top-6) |
 | 43–64 | `moe_out_v2` (`VLLM_EXL3_TC_MOE_V2=1`) |
 | 65–2048 | `moe_out_prefill` (`VLLM_EXL3_TC_MOE_PREFILL=1`) |
 
@@ -191,11 +192,12 @@ this port, on 4× CMP 170HX.
 
 ## Serving results
 
-Checkpoint: Mia-AiLab DeepSeek-V4.1-Flash-EXL3-3.0bpw. Baseline is full CUDA
-graphs, coop, and NCCL. Shipped is that baseline plus host all-reduce plus
-the tensor-core row dispatch above.
+Checkpoint: Mia-AiLab DeepSeek-V4.1-Flash-EXL3-3.0bpw. The left column is
+the optimized stack already in service: full CUDA graphs, coop, and NCCL.
+Coop is that optimization, not a stock default. Shipped keeps coop for 1–42
+rows and adds host all-reduce plus the tensor-core dispatch above.
 
-| | Baseline | Shipped | |
+| | Graphs + coop | Shipped | |
 |---|---:|---:|---:|
 | Structured tok/s | 172.65 | 178.27 | +3.3% |
 | Structured cycle | 34.49 ms | 33.41 ms | |
@@ -251,11 +253,11 @@ CUDA-graph replay, and ids of −1 writing zeros.
 
 Python text has varied between a 99-token completion (`4a9988321ab7`) and a
 153-token completion (`1a53abb1225f`) on both arms since host all-reduce was
-enabled. The fullgraph baseline produced the 99-token completion on all five
+enabled. The graphs + coop stack produced the 99-token completion on all five
 runs. Per-output speed matches across arms. The mixed median is not a kernel
 regression.
 
 There is no scorer here for tool calls, JSON schema, or KL against the
-baseline. The quality evidence for this dispatch is Gate 0's FP64 pools and
+graphs + coop stack. The quality evidence for this dispatch is Gate 0's FP64 pools and
 the 9/9 needle passes. `nsys` was not available, so there is no kernel
 profile in this repository.
