@@ -1,0 +1,6 @@
+*.so
+*.abi3.so
+__pycache__/
+*.pyc
+build/
+.cache/
