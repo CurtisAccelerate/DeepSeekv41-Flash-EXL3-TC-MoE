@@ -159,18 +159,19 @@ Cold prefill and decode on `/v1/completions`, 128 generated tokens, median of
 | 165 | 1,595 / 149.3 | 1,560 / 147.1 | 1,542 / 148.3 | 1,485 / 150.0 | 1,358 / 154.8 |
 | 180 | 1,577 / 149.5 | 1,525 / 147.3 | 1,546 / 148.0 | 1,488 / 149.9 | 1,367 / 154.3 |
 
-Same loaded server, HBM lock confirmed at NDIV 64 (1728 MHz), model not
-restarted. Median of 5 for decode, median of 3 for the cold curve. `nvidia-smi`
-still printed 1458 MHz on every sample.
+Same loaded server, model not restarted. The lock was dropped from NDIV 64
+(1728 MHz) to NDIV 54 (1458 MHz) and put back. Median of 5 for decode, median
+of 3 for the cold curve. `nvidia-smi` printed 1458 MHz on every sample at
+both locks.
 
-| | 1728 MHz |
-|---|---:|
-| Structured c1 | 178.5 tok/s |
-| Structured c8 | 575.7 tok/s |
-| Code c1 | 138.6 tok/s |
-| Prose c1 | 90.2 tok/s |
-| 2,048 prefill / decode | 1,556 / 149.4 |
-| 32,768 prefill / decode | 1,532 / 148.5 |
+| | 1728 MHz | 1458 MHz |
+|---|---:|---:|
+| Structured c1 | 178.5 | 174.2 |
+| Structured c8 | 575.7 | 568.2 |
+| Code c1 | 138.6 | 139.1 |
+| Prose c1 | 90.2 | 93.1 |
+| 2,048 prefill / decode | 1,556 / 149.4 | 1,561 / 145.8 |
+| 32,768 prefill / decode | 1,532 / 148.5 | 1,512 / 144.6 |
 
 [Qwen3.8-Flash-Next EXL3 5.05 bpw, 2× CMP 170HX](https://github.com/Morrowmake/qwen38-flash-next-cmp170hx-recipe)
 (recipe 1.0.0):
