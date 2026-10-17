@@ -130,6 +130,21 @@ generation is running. Decode tok/s is `(completion_tokens - 1) / (end - first_t
 Medians use all five runs, including the cold first sample. Thinking was off.
 Temperature 0, top_p 1, max tokens 400.
 
+## Requirements
+
+The transformer weights sit on the four GPUs. Engram does not.
+
+| | |
+|---|---:|
+| GPUs | 4× 64 GiB. This run holds about 62.5 GiB on each card. |
+| Weights on GPU | 55.8 GiB per card, 223 GiB total |
+| CUDA graphs | about 1.7 GiB per card |
+| KV cache | the rest of each card. This pool is 616,916 tokens, fp8 MLA |
+| Engram | pinned host RAM, `cpu_offload`. 23.6 GiB per table, two tables on each rank, 189 GiB |
+| Checkpoint on disk | 674 GiB. Loaded lazily. The file is not resident in RAM or VRAM |
+
+Plan host RAM for that 189 GiB pin plus headroom. The host these numbers came from has 377 GB, with about 288 GB in use while serving.
+
 ## Morrowmake's published CMP 170HX figures
 
 These are their numbers, on a different model, on two cards. They are here
