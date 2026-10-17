@@ -174,6 +174,13 @@ both locks.
 | 2,048 prefill / decode | 1,556 / 149.4 | 1,561 / 145.8 |
 | 32,768 prefill / decode | 1,532 / 148.5 | 1,512 / 144.6 |
 
+A later pass raised the cap to 165 W and left the lock at NDIV 64. The lock
+tool read 1728 MHz for the whole run, and the cap was put back to 140 W at
+the end. It matches the 165 W row above: structured 178.7 / 572.5, code
+136.4 / 315.5, prose 88.2 / 257.1. Cold prefill / decode was 1,596 / 149.5 at
+2,048 tokens, 1,562 / 146.9 at 8,192, 1,541 / 148.7 at 32,768, and 1,483 /
+150.7 at 65,536.
+
 [Qwen3.8-Flash-Next EXL3 5.05 bpw, 2× CMP 170HX](https://github.com/Morrowmake/qwen38-flash-next-cmp170hx-recipe)
 (recipe 1.0.0):
 
