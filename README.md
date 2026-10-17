@@ -3,7 +3,8 @@
 Curtis White ([CurtisAccelerate](https://github.com/CurtisAccelerate)).
 
 Serving recipe for DeepSeek V4.1 Flash, EXL3, tensor parallel 4, on 4× CMP
-170HX (sm_80, 140 W, PCIe Gen2 x16, no NVLink). Morrowmake published the
+170HX (sm_80, 140 W, HBM locked at 1728 MHz) in a 2× Xeon E5-2689 v4
+Broadwell host, PCIe Gen2 x16, no NVLink. Morrowmake published the
 tensor-core MoE kernels and the host-staged all-reduce for
 Qwen3.8-Flash-Next. This repository is those kernels brought onto this
 checkpoint: the shapes, the row rule, the shared workspace, the EXL3 hook,
@@ -120,9 +121,11 @@ Set `GATE0_MODEL` to the checkpoint and `GATE0_PLUGIN` to the EXL3 plugin.
 
 ## Hardware for these numbers
 
-4× CMP 170HX, sm_80, 140 W power cap, PCIe Gen2 x16, no NVLink. Memory clock
-left at the card's reported maximum, 1458 MHz. Dual socket. Peer access left
-off. Decode tok/s is `(completion_tokens - 1) / (end - first_token)`.
+4× CMP 170HX, sm_80, 140 W power cap, in a 2× Xeon E5-2689 v4 (Broadwell)
+host, PCIe Gen2 x16, no NVLink. Peer access left off. HBM is locked at
+NDIV 64, **1728 MHz**. The memory clock `nvidia-smi` prints stays at the
+card-reported 1458 MHz and does not show that lock, including while a
+generation is running. Decode tok/s is `(completion_tokens - 1) / (end - first_token)`.
 Medians use all five runs, including the cold first sample. Thinking was off.
 Temperature 0, top_p 1, max tokens 400.
 
@@ -132,8 +135,9 @@ These are their numbers, on a different model, on two cards. They are here
 so the hardware class is comparable. They are not a head-to-head.
 
 The number from this port is below. Same card, four of them, DeepSeek V4.1
-Flash, the shipped kernels. The cap was raised only for this measurement and
-put back to 140 W when it finished. Decode does not move with the cap.
+Flash, the shipped kernels, HBM lock 1728 MHz. The cap was raised only for
+this measurement and put back to 140 W when it finished. Decode does not
+move with the cap.
 Prefill gains a few tens of tokens per second from 140 W to 180 W and stays
 near 1,500 tok/s, not their 2,651.
 
@@ -154,6 +158,19 @@ Cold prefill and decode on `/v1/completions`, 128 generated tokens, median of
 | 140 | 1,570 / 149.2 | 1,528 / 146.8 | 1,519 / 148.5 | 1,453 / 149.9 | 1,329 / 156.5 |
 | 165 | 1,595 / 149.3 | 1,560 / 147.1 | 1,542 / 148.3 | 1,485 / 150.0 | 1,358 / 154.8 |
 | 180 | 1,577 / 149.5 | 1,525 / 147.3 | 1,546 / 148.0 | 1,488 / 149.9 | 1,367 / 154.3 |
+
+Same loaded server, HBM lock confirmed at NDIV 64 (1728 MHz), model not
+restarted. Median of 5 for decode, median of 3 for the cold curve. `nvidia-smi`
+still printed 1458 MHz on every sample.
+
+| | 1728 MHz |
+|---|---:|
+| Structured c1 | 178.5 tok/s |
+| Structured c8 | 575.7 tok/s |
+| Code c1 | 138.6 tok/s |
+| Prose c1 | 90.2 tok/s |
+| 2,048 prefill / decode | 1,556 / 149.4 |
+| 32,768 prefill / decode | 1,532 / 148.5 |
 
 [Qwen3.8-Flash-Next EXL3 5.05 bpw, 2× CMP 170HX](https://github.com/Morrowmake/qwen38-flash-next-cmp170hx-recipe)
 (recipe 1.0.0):
