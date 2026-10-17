@@ -1,46 +1,43 @@
 # DeepSeek V4.1 Flash — tensor-core EXL3 MoE on CMP 170HX
 
 Curtis White ([CurtisAccelerate](https://github.com/CurtisAccelerate)).
-This is the DeepSeek V4.1 Flash port and the measurements. Morrowmake
-published these tensor-core kernels for Qwen3.8-Flash-Next. They had not
-been shaped, wired, or timed on DeepSeek V4.1 Flash. That work is this
-repository.
 
-On 4× CMP 170HX, sm_80, 140 W, PCIe Gen2 x16, no NVLink, the shipped stack
-does **178.3 tok/s** structured decode, **587 tok/s** across 8 users, and a
-median time to first token of **8.37 s** from 2K to 255K context (10.9 s at
-255,424 tokens). The same machine on full CUDA graphs and NCCL, before this
-port, was 172.7 tok/s, 456 tok/s at 8 users, and 10.15 s median time to
-first token. Needles passed 9/9 through 256K. The KV pool is 616,916 tokens.
+Serving recipe for DeepSeek V4.1 Flash, EXL3, tensor parallel 4, on 4× CMP
+170HX (sm_80, 140 W, PCIe Gen2 x16, no NVLink). Morrowmake published the
+tensor-core MoE kernels and the host-staged all-reduce for
+Qwen3.8-Flash-Next. This repository is those kernels brought onto this
+checkpoint: the shapes, the row rule, the shared workspace, the EXL3 hook,
+and the measurements.
 
-What was built here, on top of the kernels and the host all-reduce that
-Morrowmake wrote:
+On that machine the shipped stack does **178.3 tok/s** structured decode,
+**587 tok/s** across 8 users, and a median time to first token of **8.37 s**
+from 2K through 255K context (10.9 s at 255,424 tokens). Full CUDA graphs and
+NCCL on the same box, before this port, were 172.7 tok/s, 456 tok/s at 8
+users, and 10.15 s. Needles passed 9/9 through 256K. The KV pool is 616,916
+tokens.
 
-- The kernels were retargeted to this checkpoint: hidden 5120, local
-  intermediate 640 and 512, 384 experts, top-6, mul1 codebook, K3 on every
-  served layer. A K2 down-projection that spilled 8 bytes at the
-  255-register cap was split into two passes. The served kernels spill zero
-  registers.
-- Gate 0 on the real weights, not a Qwen shape. v2 loses to coop at 1–42
-  rows on both served K3 shapes and beats the stock path at 48 rows and
-  across prefill. The row rule is the result of that measurement: coop keeps
-  1–42, `moe_out_v2` is only 43–64, `moe_out_prefill` is 65–2048.
-- One 540.4 MiB workspace per GPU, shared by every MoE layer, allocated
-  when the first layer loads and before the KV cache is profiled. A buffer
-  per layer does not fit on a 64 GB card next to this model.
-- The hook into the existing EXL3 fused path. Activations stay BF16. The
-  path is not forced on by casting FP16 to BF16.
-- Host all-reduce measured on this dual-socket Gen2 box with peer access
-  left off. That is a decode win on this model (structured 172.7 to 178.3
-  tok/s, same text). The tensor-core prefill and the 8-user step sit on
-  top of it.
+The port:
 
-This repository is that source and those measurements. It does not contain
-weights and it does not publish a container image. Build the extension
-against the same PyTorch the server imports. `TORCH_LIBRARY` is not a stable
-ABI.
+- Hidden 5120, local intermediate 640 and 512, 384 experts, top-6, mul1
+  codebook, K3 on every served layer. A K2 down-projection that spilled 8
+  bytes at the 255-register cap was split into two passes. The served
+  kernels spill zero registers.
+- Gate 0 on these weights. v2 loses to coop at 1–42 rows and beats the stock
+  path from 48 rows through prefill, so coop keeps 1–42, `moe_out_v2` is
+  only 43–64, and `moe_out_prefill` is 65–2048.
+- One 540.4 MiB workspace per GPU, shared by every MoE layer, allocated when
+  the first layer loads and before the KV cache is profiled. A buffer per
+  layer does not fit beside this model on a 64 GB card.
+- The hook stays on the existing EXL3 fused path. Activations stay BF16.
+  The path is not turned on by casting FP16 to BF16.
+- Host all-reduce, peer access left off, is the decode step from 172.7 to
+  178.3 tok/s on the same structured text. The tensor-core path is what cuts
+  prefill time and raises the 8-user rate.
 
-Upstream licenses and the checkpoint credit are in [NOTICE.md](NOTICE.md).
+The tree is that source. It does not contain weights and it does not publish
+a container image. Build the extension against the same PyTorch the server
+imports. `TORCH_LIBRARY` is not a stable ABI. Upstream licenses and the
+checkpoint credit are in [NOTICE.md](NOTICE.md).
 
 ## What is on
 
@@ -240,9 +237,7 @@ enabled. The fullgraph baseline produced the 99-token completion on all five
 runs. Per-output speed matches across arms. The mixed median is not a kernel
 regression.
 
-There is no scorer here for C64, tool calls, JSON schema, a trade loop, or
-KL against the baseline. The quality evidence for this dispatch is Gate 0's
-FP64 pools and the 9/9 needle passes. The C64 prompt file that was inspected
-has 10 task ids, not 14. Turn 1 is separable and each answer opened with one
-`SEARCH:` line. Turn 2 embeds a stored assistant reply and was not rerun.
-`nsys` was not available, so there is no kernel profile in this repository.
+There is no scorer here for tool calls, JSON schema, or KL against the
+baseline. The quality evidence for this dispatch is Gate 0's FP64 pools and
+the 9/9 needle passes. `nsys` was not available, so there is no kernel
+profile in this repository.
