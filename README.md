@@ -41,6 +41,19 @@ a container image. Build the extension against the same PyTorch the server
 imports. `TORCH_LIBRARY` is not a stable ABI. Upstream licenses and the
 checkpoint credit are in [NOTICE.md](NOTICE.md).
 
+## DeepSeek V4.1 Flash 1017
+
+The measurements above are the previous checkpoint, Mia-AiLab EXL3 3.0 bpw.
+1017 is a different weight selection. Layers 0–39 routed experts are LibertAI
+EXL3 2.9. Attention, shared experts, the head, the draft, and Engram stay the
+official FP8 checkpoint. These kernels and this launch still run the experts.
+They do not choose which file an attention weight comes from. Leave `head_bits`
+unset and set `mtp_experts` to `source`, or the loader quantizes tensors that
+serve left official.
+
+The 1017 recipe, the hybrid config, the launch script, and those measurements
+are [DeepSeekv41-Flash-1017-EXL3-CMP170HX](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX).
+
 ## What is on
 
 | Rows | Kernel |
