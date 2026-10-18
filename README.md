@@ -132,11 +132,11 @@ Temperature 0, top_p 1, max tokens 400.
 
 ## Requirements
 
-You need four 64 GB GPUs and a host with 384 GB of system RAM. This run fills about 62.5 GB of each 64 GB card, so a 48 GB card does not fit. The checkpoint file is 674 GB on disk. It is read as needed and does not have to sit in RAM.
+4× CMP 170HX, 64 GB each. This run fills about 62.5 GB of each card, so a 48 GB card does not fit. The checkpoint file is 674 GB on disk. It is read as needed and does not have to sit in RAM.
 
 Of each card, about 56 GB is the model weights. The rest is the KV cache, which holds about 617,000 tokens, plus a small CUDA graph.
 
-Engram does not go on the GPUs. It is pinned in system RAM, about 190 GB. While this model is serving, the host is using about 288 GB of its 377 GB. A 256 GB machine does not have room for that.
+The host has 378 GB of RAM visible to the OS. That is the machine, not a minimum. While this model is serving, the host is using about 288 GB of that. Engram does not go on the GPUs. It is pinned in system RAM, about 190 GB. A 256 GB machine does not have room for that.
 
 ## Morrowmake's published CMP 170HX figures
 
