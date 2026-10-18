@@ -84,7 +84,15 @@ CUDA graph mode `FULL_AND_PIECEWISE` with capture sizes
 
 `scripts/run-tp4-tcmoe.sh` is the launch template. Point it at your image,
 your checkpoint directory, the host-allreduce cherry-pick, the hooked EXL3
-plugin, and the built `.so`.
+plugin, and the built `.so`. There is no separate container image in this
+repository.
+
+Set `DSV41_ARENA_CACHE_DIR` to turn on the EXL3 arena cache. The script
+passes `VLLM_EXL3_ARENA_CACHE=1` and mounts that directory. The first start
+of a checkpoint writes the arenas. The next start reads them. The loader
+skips the write if less than 4 GiB would remain free. One layer file is
+about 1.1 GiB. Decode does not use the disk cache. It only shortens the
+next load. Prefix caching is the separate `--enable-prefix-caching` flag.
 
 ## Plugin
 

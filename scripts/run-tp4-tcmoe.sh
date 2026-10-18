@@ -27,6 +27,16 @@ if [ -n "${DSV41_DOCKER:-}" ]; then
   DOCKER=(${DSV41_DOCKER})
 fi
 
+ARENA=()
+if [ -n "${DSV41_ARENA_CACHE_DIR:-}" ]; then
+  mkdir -p "${DSV41_ARENA_CACHE_DIR}"
+  ARENA+=(
+    -v "${DSV41_ARENA_CACHE_DIR}:${DSV41_ARENA_CACHE_DIR}"
+    -e VLLM_EXL3_ARENA_CACHE=1
+    -e VLLM_EXL3_ARENA_CACHE_DIR="${DSV41_ARENA_CACHE_DIR}"
+  )
+fi
+
 "${DOCKER[@]}" rm -f dsv41-tp4 >/dev/null 2>&1 || true
 "${DOCKER[@]}" run -d \
   --name dsv41-tp4 \
@@ -59,6 +69,7 @@ fi
   -e VLLM_EXL3_MOE_TP_ALIGN=128 \
   -e VLLM_EXL3_MOE_TP_ROTATE=1 \
   -e TORCH_CUDA_ARCH_LIST=8.0 \
+  "${ARENA[@]}" \
   --entrypoint vllm \
   "$DSV41_IMAGE" \
   serve /model-view \
