@@ -1,0 +1,12 @@
+{
+  "upstream_repository": "turboderp-org/exllamav3",
+  "upstream_commit": "da68d57de61781e5b74ad68698ac4caf36408d7a",
+  "source_path": "exllamav3/exllamav3_ext/quant/exl3_moe_coop_kernel.cuh",
+  "measured_baseline_header_sha256": "fc3c0d65d8ff787b4dcc977a05382666ba81ea01ce64c09b74dda01fa6660525",
+  "measured_candidate_header_sha256": "2eccc9167725d4219e4442d9620a4f7fa19bd08e6b0a2d0e49482f436602979e",
+  "measured_baseline_cubin_sha256": "506f7ccd0108693e8c9f97f866330c976d72fbfca8e093e414f2150962d7560f",
+  "measured_candidate_cubin_sha256": "a4c2ed3e83ee8c9025962379fe1782b66c38b340f05cfa986b6d29c5ded63187",
+  "published_patch_sha256": "719be2c5c3953bf04628f0c08a2675aa08223efd2fb6d4bc88458c7cfd31a098",
+  "initial_publication_commit": "e560d05caa54969b5fc664056202bea863ca9513",
+  "note": "Measured header hashes preserve original bytes. Published patch is LF-normalized. No binaries or weight fixtures are distributed."
+}

@@ -23,3 +23,13 @@ code. This repository does not include their weights.
   not in this repository. On the layers that were measured, the trellis last
   dimension is 48, which is bits_x2 6 (K3), including layers 18 and 22.
 - The model is DeepSeek V4.1 Flash from DeepSeek.
+
+## Cooperative-decode experiment
+
+The separate `experiments/exl3-cooperative-decode/` patch modifies ExLlamaV3
+at `da68d57de61781e5b74ad68698ac4caf36408d7a`, Copyright (c) 2025 Turboderp,
+under the [included MIT license](experiments/exl3-cooperative-decode/EXLLAMAV3-LICENSE.txt).
+Its [scope and provenance notice](experiments/exl3-cooperative-decode/exllamav3-six-row-transpose-NOTICE.txt)
+records the measured artifact and qualification limits. Curtis White /
+CurtisAccelerate performed the experiment and measurements. This component's
+MIT notice is separate from the repository's Apache-2.0 license.

@@ -1,0 +1,92 @@
+--- a/exllamav3/exllamav3_ext/quant/exl3_moe_coop_kernel.cuh
++++ b/exllamav3/exllamav3_ext/quant/exl3_moe_coop_kernel.cuh
+@@ -337,6 +337,22 @@
+ // 2/3/4 bpw; other widths stage each k-slice's tile words in shared memory and decode with
+ // dq_dispatch
+ 
++// EXL transposed operand control: original decoded f0/f1 become A=W^T.
++// No trellis/decoder change; B holds the same two activation half2 pairs.
++__device__ __forceinline__ void mma_transposed_h(const FragB& f0, const FragB& f1,
++    half2 x0, half2 x1, FragC_h& c)
++{
++    const uint32_t* w0=reinterpret_cast<const uint32_t*>(&f0);
++    const uint32_t* w1=reinterpret_cast<const uint32_t*>(&f1);
++    const uint32_t a=*reinterpret_cast<const uint32_t*>(&x0);
++    const uint32_t b=*reinterpret_cast<const uint32_t*>(&x1);
++    uint32_t* cc=reinterpret_cast<uint32_t*>(&c);
++    asm volatile("mma.sync.aligned.m16n8k16.row.col.f16.f16.f16.f16 "
++        "{%0,%1}, {%2,%3,%4,%5}, {%6,%7}, {%0,%1};"
++        : "+r"(cc[0]), "+r"(cc[1])
++        : "r"(w0[0]), "r"(w1[0]), "r"(w0[1]), "r"(w1[1]), "r"(a), "r"(b));
++}
++
+ template <int bits, int cb, bool WIDE, bool HALF = false>
+ __device__ __forceinline__ void gemv_tile
+ (
+@@ -422,7 +438,7 @@
+             for (int l = 0; l < LOADS; ++l)
+                 pf[d][l] = ld_b(d, l);
+ 
+-    FragC_h ch[WNT][2] = {};
++    FragC_h ch[WNT] = {};
+     float2 acc0[WNT][2] = {};
+ 
+     for (int ib = 0; ib < myn; ib += PF)
+@@ -491,8 +507,7 @@
+                     exl3_gemv_ns::dq8_regs_3bits<cb>(awv, bwv, x_s2, f0, f1);
+                 }
+ 
+-                exl3_gemv_ns::mma_ab_h(a01, a23, f0, ch[t][0]);
+-                exl3_gemv_ns::mma_ab_h(a01, a23, f1, ch[t][1]);
++                mma_transposed_h(f0, f1, a01[0], a23[0], ch[t]);
+             }
+ 
+             if ((d + 1) % FOLD == 0 || i + 1 == myn)
+@@ -502,30 +517,29 @@
+                     #pragma unroll
+                     for (int f = 0; f < 2; ++f)
+                     {
+-                        acc0[t][f].x += __low2float(ch[t][f][0]);
+-                        acc0[t][f].y += __high2float(ch[t][f][0]);
+-                        ch[t][f][0] = hzero;
++                        acc0[t][f].x += __low2float(ch[t][f]);
++                        acc0[t][f].y += __high2float(ch[t][f]);
++                        ch[t][f] = hzero;
+                     }
+             }
+         }
+     }
+ 
+-    // Cross-warp reduction over the k splits. Lane l holds row l/4, cols
+-    // tile*16 + frag*8 + 2*(l%4) (+1)
+-    if (r0_ok)
+-    {
+-        const int c0 = 2 * (lane & 3);
+-        float* red = sh_red + (wk * ROWS + r0) * TCOLS + wn * COLS;
++    // Transposed D: output weight col=lane/4 (+8 for f1), token=2*(lane%4).
++    // Scatter into the original [WKK][ROWS][TCOLS] shared reduction layout.
++    const int token0=2*(lane&3);
++    const int weightcol=lane>>2;
++    #pragma unroll
++    for (int t=0;t<WNT;++t)
+         #pragma unroll
+-        for (int t = 0; t < WNT; ++t)
+-            #pragma unroll
+-            for (int f = 0; f < 2; ++f)
+-            {
+-                const int col = t * 16 + f * 8 + c0;
+-                red[col + 0] = acc0[t][f].x;
+-                red[col + 1] = acc0[t][f].y;
+-            }
+-    }
++        for (int f=0;f<2;++f)
++        {
++            const int col=wn*COLS+t*16+f*8+weightcol;
++            if(token0<nrows)
++                sh_red[(wk*ROWS+token0)*TCOLS+col]=acc0[t][f].x;
++            if(token0+1<nrows)
++                sh_red[(wk*ROWS+token0+1)*TCOLS+col]=acc0[t][f].y;
++        }
+     __syncthreads();
+ 
+     for (int o = threadIdx.x; o < TCOLS * nrows; o += THREADS)     // up to 128 x 8 outputs per block

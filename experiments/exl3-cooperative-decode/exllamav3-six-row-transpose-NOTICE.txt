@@ -1,0 +1,33 @@
+Experimental measured artifact; not a generic integration or deployment patch.
+
+Source: turboderp-org/exllamav3 at da68d57de61781e5b74ad68698ac4caf36408d7a,
+exllamav3/exllamav3_ext/quant/exl3_moe_coop_kernel.cuh.
+Copyright(c)2025 Turboderp; full MIT grant in EXLLAMAV3-LICENSE.txt.
+Experiment and measurements: Curtis White / CurtisAccelerate.
+Serving integration credit: vLLM and Morrowmake. Model/quant: DeepSeek/LibertAI.
+
+Exact measured baseline header SHA256:
+fc3c0d65d8ff787b4dcc977a05382666ba81ea01ce64c09b74dda01fa6660525
+Candidate header SHA256:
+2eccc9167725d4219e4442d9620a4f7fa19bd08e6b0a2d0e49482f436602979e
+Header hashes preserve measured Windows bytes; patch is LF-normalized.
+The baseline header differs from this upstream pin only by one final blank line.
+git apply --check passed against an isolated copy of the pinned upstream header.
+
+The measured binary instantiates K2/K3, mul1(cb2), wide gate/down and unchanged
+rot entries,512threads,WNT2/WN4/WKK4,128columns/block,Ksplit1,FOLD4.
+Serving eligibility was SM80,six rows,H5120,top-k6,384 local experts,[0,384),
+uniform gate/up/down K2 orK3,I512/640,gated SiLU,limit10, no bias/shared extra,
+no mixed codebook, matching contiguous CUDA tensor dtypes/scratch/counters.
+Unsupported calls fell back to the original extension. The source template
+has broader reach than this guard; do not install it as a universal replacement.
+Actual candidate coverage in concurrent serving was not instrumented.
+
+72/72 primary bitwise fixture/card passes and independent real-case FP32 gates
+qualify those fixtures only. CPU fragment/scatter/logical-fold proof passed;
+it does not emulate hardware-MMA internals. Future upstream integration needs
+an explicit demonstrated-scope guard, existing MoE regression/graph tests,
+matched-toolchain rebuild and numerical/performance verification. No new GPU
+validation occurred while preparing publication. No binaries or weights included.
+The resident graph controller and new-binary capture are outside this patch;
+this source record does not authorize hot binary registration into a live owner.

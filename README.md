@@ -54,6 +54,20 @@ serve left official.
 The 1017 recipe, the hybrid config, the launch script, and those measurements
 are [DeepSeekv41-Flash-1017-EXL3-CMP170HX](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX).
 
+## Cooperative-decode experiment — October 21, 2026
+
+The [six-row ExLlamaV3 cooperative-decode experiment](experiments/exl3-cooperative-decode/)
+is maintained here with its measured source patch, CPU mapping check, source
+identities and qualification notes. It transposes MMA operands on the tested
+SM80 K2/K3 path. This is a separate experiment from the `tc_moe` kernels below;
+the existing hook and launch scripts do not enable it.
+
+The model-specific [controlled sweep tables](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/e560d05caa54969b5fc664056202bea863ca9513/benchmarks/2026-10-21/kernel-sweeps.md)
+and [4× CMP 170HX versus 4× DGX Spark comparison](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/e560d05caa54969b5fc664056202bea863ca9513/benchmarks/2026-10-21/spark-comparison.md)
+remain in the 1017 repository. The experiment measured modest decode gains;
+its source template still needs a guard matching the tested serving scope
+before general integration.
+
 ## What is on
 
 | Rows | Kernel |
