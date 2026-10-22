@@ -28,6 +28,18 @@ experiment, not a generic replacement or a ready-to-install integration.
 The private resident graph controller, CUDA binaries and weight fixtures
 are not included. See the [scope and attribution notice](exllamav3-six-row-transpose-NOTICE.txt).
 
+## October 22 follow-up
+
+The later four-round resident sweep confirmed **+2.86% paired C1 counting
+decode** for transpose versus the controlled baseline. The separate
+[six-row host tuning](../host-allreduce-six-row/) added another **+1.74%**
+on that workload. These are limited claims; the full eight-task suite did
+not improve aggregate throughput over its previous run.
+[Updated 1017 evidence](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-10-22/README.md).
+The [resident graph report](../../docs/resident-cuda-graph-optimization.md)
+describes later compatible-function updates; the October 21 source artifact
+alone does not supply that integration.
+
 ## Validation and results
 
 The existing GPU evidence comprises 18 fixtures on each of four cards:
@@ -89,7 +101,6 @@ is outside this source artifact's qualification.
 ## Attribution
 
 ExLlamaV3 cooperative source: Turboderp, Copyright (c) 2025,
-[MIT](EXLLAMAV3-LICENSE.txt). Experiment and measurements: Curtis White /
-CurtisAccelerate. Serving integration: vLLM and Morrowmake. Model/quant:
+[MIT](EXLLAMAV3-LICENSE.txt). Experiment and measurements: CurtisAccelerate. Serving integration: vLLM and Morrowmake. Model/quant:
 DeepSeek and LibertAI. The included MIT license governs the inherited
 component; the repository's other tensor-core work retains its own notices.

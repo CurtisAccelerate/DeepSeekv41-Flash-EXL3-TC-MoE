@@ -1,0 +1,35 @@
+--- a/vllm/sm80/distributed/host_shm_all_reduce.py
++++ b/vllm/sm80/distributed/host_shm_all_reduce.py
+@@ -1095,6 +1095,23 @@
+             algo = 1
+         else:
+             algo = 0
++        threads = self.threads
++        # Opt-in DS V4.1 Flash 1017 specialization. Set before graph capture.
++        # Preserve one block: changing grid size can break shared sequence state.
++        if (
++            os.environ.get("VLLM_HOST_ALLREDUCE_SIX_ROW", "0") == "1"
++            and self.world_size == 4
++            and self.block_cap == 1
++            and blocks == 1
++            and threads == 1024
++            and algo == 0
++            and inp.dtype == torch.bfloat16
++            and nbytes == 61440
++            and inp.ndim == 2
++            and inp.shape == (6, 5120)
++            and torch.cuda.get_device_capability(inp.device) == (8, 0)
++        ):
++            threads, algo = 512, 1  # existing two-shot kernel; CUDA unchanged
+         self.mod.all_reduce(
+             src,
+             out,
+@@ -1105,7 +1122,7 @@
+             self.world_size,
+             self.slot_bytes,
+             blocks,
+-            self.threads,
++            threads,
+             self.spin_cycles,
+             algo,
+         )

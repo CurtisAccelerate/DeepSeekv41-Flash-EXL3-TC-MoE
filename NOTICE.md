@@ -2,7 +2,7 @@
 
 The DeepSeek V4.1 Flash port, the row dispatch, the shared workspace, the
 EXL3 hook, and the CMP 170HX measurements in this repository are by
-Curtis White (https://github.com/CurtisAccelerate).
+CurtisAccelerate (https://github.com/CurtisAccelerate).
 
 The kernels and the host-staged all-reduce started from other people's
 code. This repository does not include their weights.
@@ -30,6 +30,14 @@ The separate `experiments/exl3-cooperative-decode/` patch modifies ExLlamaV3
 at `da68d57de61781e5b74ad68698ac4caf36408d7a`, Copyright (c) 2025 Turboderp,
 under the [included MIT license](experiments/exl3-cooperative-decode/EXLLAMAV3-LICENSE.txt).
 Its [scope and provenance notice](experiments/exl3-cooperative-decode/exllamav3-six-row-transpose-NOTICE.txt)
-records the measured artifact and qualification limits. Curtis White /
-CurtisAccelerate performed the experiment and measurements. This component's
+records the measured artifact and qualification limits. CurtisAccelerate performed the experiment and measurements. This component's
 MIT notice is separate from the repository's Apache-2.0 license.
+
+## October 22 experiments
+
+The six-row host all-reduce patch adapts launch selection in Morrowmake's
+host-staged collective at the existing pinned revision; its CUDA reduction
+source is unchanged and remains Apache-2.0. Hybrid P2P and resident CUDA graph
+pages report separate experiments, without shipping deployment controllers,
+driver patches, model weights or binary modules. NVIDIA's documented graph
+update API underlies the technique; no claim of inventing that API is made.

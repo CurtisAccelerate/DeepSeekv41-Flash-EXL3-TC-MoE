@@ -3,7 +3,7 @@ Experimental measured artifact; not a generic integration or deployment patch.
 Source: turboderp-org/exllamav3 at da68d57de61781e5b74ad68698ac4caf36408d7a,
 exllamav3/exllamav3_ext/quant/exl3_moe_coop_kernel.cuh.
 Copyright(c)2025 Turboderp; full MIT grant in EXLLAMAV3-LICENSE.txt.
-Experiment and measurements: Curtis White / CurtisAccelerate.
+Experiment and measurements: CurtisAccelerate.
 Serving integration credit: vLLM and Morrowmake. Model/quant: DeepSeek/LibertAI.
 
 Exact measured baseline header SHA256:

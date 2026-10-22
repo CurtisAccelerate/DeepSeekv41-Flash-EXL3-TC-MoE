@@ -1,0 +1,10 @@
+{
+  "upstream_repository": "Morrowmake/vllm-cmp170hx",
+  "upstream_commit": "18305948acba3f4c4d912cdd56f2202d2ebd94e8",
+  "upstream_path": "vllm/sm80/distributed/host_shm_all_reduce.py",
+  "upstream_lf_sha256": "cc037b6b833cb786811023a9ea2c9dd5330a322a9ca44d430c6df553693ba013",
+  "cuda_source_sha256": "046d371d57e0f55ff5ff0aba066eaf775ba8c5b4b463370a1b1a6b1d5ee7a493",
+  "cuda_source_unchanged": true,
+  "patch_sha256": "f8d061925463dad139b4c36d910feeaff29e4fc56f9e9ea6e883c2eead8bcc82",
+  "status": "Opt-in source adaptation of measured launch selection; patch itself CPU/source checked, no new GPU validation during publication."
+}
