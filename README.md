@@ -4,19 +4,104 @@
 
 Serving recipe for DeepSeek V4.1 Flash, EXL3, tensor parallel 4, on 4× CMP
 170HX (sm_80, 140 W, HBM locked at 1728 MHz) in a 2× Xeon E5-2689 v4
-Broadwell host, PCIe Gen2 x16, no NVLink. Morrowmake published the
-tensor-core MoE kernels and the host-staged all-reduce for
-Qwen3.8-Flash-Next. This repository is those kernels brought onto this
-checkpoint: the shapes, the row rule, the shared workspace, the EXL3 hook,
-and the measurements.
+Broadwell host, PCIe Gen2 x16, no NVLink. Fastest build measured for this
+mode: these weights, four of these cards, this host.
 
-On that machine the shipped stack does **178.3 tok/s** structured decode,
-**587 tok/s** across 8 users, and a median time to first token of **8.37 s**
-from 2K through 255K context (10.9 s at 255,424 tokens). The numbers it is
-compared with are the optimized stack already in service on this host:
-full CUDA graphs, coop, and NCCL. Coop is part of that optimization. It is
-not an untouched default. That stack did 172.7 tok/s, 456 tok/s at 8 users,
-and 10.15 s. Needles passed 9/9 through 256K. The KV pool is 616,916 tokens.
+## Benchmarks
+
+Shipped stack. Coop through 42 rows, tensor-core MoE from 43 rows through
+prefill, host all-reduce, peer access off. Decode is
+`(completion_tokens - 1) / (end - first_token)`. Temperature 0, thinking off.
+Medians use all five runs. Needles passed 9/9 through 256K. The KV pool is
+616,916 tokens.
+
+| | This build |
+|---|---:|
+| Structured decode | 178.3 tok/s |
+| Structured, 8 users | 587 tok/s |
+| Prose decode | 91.2 tok/s |
+| Prose, 8 users | 260 tok/s |
+| Python, 99-token median | 129.5 tok/s |
+| Median time to first token, 2K through 255K | 8.37 s |
+| Time to first token at 255,424 tokens | 10.9 s |
+
+Mia cells on the same server, median of 5. The power cap was raised only for
+these rows and put back to 140 W when the run finished. Decode does not move
+with the cap.
+
+| W | structured, 1 user | structured, 8 users | code, 1 user | code, 8 users | prose, 1 user | prose, 8 users |
+|---:|---:|---:|---:|---:|---:|---:|
+| 140 | 178.6 | 564.7 | 138.7 | 308.1 | 84.9 | 249.7 |
+| 165 | 178.6 | 574.5 | 136.0 | 306.9 | 94.2 | 256.8 |
+| 180 | 178.6 | 574.6 | 136.2 | 313.1 | 86.3 | 264.8 |
+
+Cold prefill and decode on `/v1/completions`, 128 generated tokens, median of
+3. Prefill is prompt tokens / time to first token.
+
+| W | 2,048 prefill / decode | 8,192 | 32,768 | 65,536 | 131,072 |
+|---:|---:|---:|---:|---:|---:|
+| 140 | 1,570 / 149.2 | 1,528 / 146.8 | 1,519 / 148.5 | 1,453 / 149.9 | 1,329 / 156.5 |
+| 165 | 1,595 / 149.3 | 1,560 / 147.1 | 1,542 / 148.3 | 1,485 / 150.0 | 1,358 / 154.8 |
+| 180 | 1,577 / 149.5 | 1,525 / 147.3 | 1,546 / 148.0 | 1,488 / 149.9 | 1,367 / 154.3 |
+
+Same loaded server, model not restarted. The HBM lock was dropped from NDIV 64
+(1728 MHz) to NDIV 54 (1458 MHz) and put back. `nvidia-smi` printed 1458 MHz
+on every sample at both locks. That print is not the lock.
+
+| | 1728 MHz | 1458 MHz |
+|---|---:|---:|
+| Structured, 1 user | 178.5 | 174.2 |
+| Structured, 8 users | 575.7 | 568.2 |
+| Code, 1 user | 138.6 | 139.1 |
+| Prose, 1 user | 90.2 | 93.1 |
+| 2,048 prefill / decode | 1,556 / 149.4 | 1,561 / 145.8 |
+| 32,768 prefill / decode | 1,532 / 148.5 | 1,512 / 144.6 |
+
+A later 165 W pass left the lock at NDIV 64. The lock tool read 1728 MHz for
+the whole run, and the cap went back to 140 W at the end. Structured 178.7 /
+572.5, code 136.4 / 315.5, prose 88.2 / 257.1. Cold prefill / decode was
+1,596 / 149.5 at 2,048, 1,562 / 146.9 at 8,192, 1,541 / 148.7 at 32,768, and
+1,483 / 150.7 at 65,536.
+
+## Comparisons
+
+Same checkpoint, same four cards, same host. The right column is this build.
+The left column is the previous stack on this server: full CUDA graphs, coop,
+and NCCL.
+
+| | Graphs + coop | This build | |
+|---|---:|---:|---:|
+| Structured tok/s | 172.65 | 178.27 | +3.3% |
+| Structured cycle | 34.49 ms | 33.41 ms | |
+| Structured acceptance | 5.970 | 5.970 | same text, hash `4e4e24a20477` |
+| Python, 99-token median | 125.11 | 129.54 | +3.5%, hash `4a9988321ab7` |
+| Prose tok/s | 86.13 | 91.17 | +5.9% |
+| Structured c1 / c4 / c8 | 173.2 / 313.8 / 456.4 | 178.8 / 343.9 / 586.6 | c8 +28.5% |
+| Prose c1 / c4 / c8 | 82.1 / 162.5 / 193.3 | 93.3 / 165.8 / 260.2 | c8 +34.6% |
+| Growing c1 TTFT, median | 10.15 s | 8.37 s | 17.5% lower |
+| TTFT at 2,080 tokens | 2.09 s | 1.78 s | |
+| TTFT at 255,424 tokens | 12.63 s | 10.90 s | |
+| KV pool | 672,372 | 616,916 | still 2.35× at 262,144 |
+
+Every one of the 30 growing-context turns was faster. No preemptions.
+Needles passed at 32,768, 131,072, and 261,568 tokens, depths 10 / 50 / 90
+(9/9). The needle string was `cobalt-heron-4417`.
+
+The intermediate arm (fullgraph + host all-reduce, coop for every row) is
+what the tensor-core dispatch was compared with:
+
+| | Host all-reduce | This build |
+|---|---:|---:|
+| Structured | 178.34 | 178.27 |
+| Python median (mixed length) | 139.27 | 130.03 |
+| Prose | 90.85 | 91.17 |
+| Structured c4 / c8 | 337.6 / 459.6 | 343.9 / 586.6 |
+| Prose c4 / c8 | 175.2 / 186.4 | 165.8 / 260.2 |
+| TTFT median | 10.27 s | 8.37 s |
+| KV pool | 687,201 | 616,916 |
+
+Structured single-stream is the same hash on all three stacks. The 8-user gain
+is the 43–64 row window. The time-to-first-token gain is the prefill kernel.
 
 The port:
 
@@ -196,114 +281,6 @@ Temperature 0, top_p 1, max tokens 400.
 Of each card, about 56 GB is the model weights. The rest is the KV cache, which holds about 617,000 tokens, plus a small CUDA graph.
 
 The host has 378 GB of RAM visible to the OS. That is the machine, not a minimum. While this model is serving, the host is using about 288 GB of that. Engram does not go on the GPUs. It is pinned in system RAM, about 190 GB. A 256 GB machine does not have room for that.
-
-## Morrowmake's published CMP 170HX figures
-
-These are their numbers, on a different model, on two cards. They are here
-so the hardware class is comparable. They are not a head-to-head.
-
-The number from this port is below. Same card, four of them, DeepSeek V4.1
-Flash, the shipped kernels, HBM lock 1728 MHz. The cap was raised only for
-this measurement and put back to 140 W when it finished. Decode does not
-move with the cap.
-Prefill gains a few tens of tokens per second from 140 W to 180 W and stays
-near 1,500 tok/s, not their 2,651.
-
-Mia decode cells, median of 5, temperature 0, thinking off. `agg` is the
-8-user total.
-
-| W | structured c1 | structured c8 | code c1 | code c8 | prose c1 | prose c8 |
-|---:|---:|---:|---:|---:|---:|---:|
-| 140 | 178.6 | 564.7 | 138.7 | 308.1 | 84.9 | 249.7 |
-| 165 | 178.6 | 574.5 | 136.0 | 306.9 | 94.2 | 256.8 |
-| 180 | 178.6 | 574.6 | 136.2 | 313.1 | 86.3 | 264.8 |
-
-Cold prefill and decode on `/v1/completions`, 128 generated tokens, median of
-3. Prefill is prompt tokens / time to first token.
-
-| W | 2,048 prefill / decode | 8,192 | 32,768 | 65,536 | 131,072 |
-|---:|---:|---:|---:|---:|---:|
-| 140 | 1,570 / 149.2 | 1,528 / 146.8 | 1,519 / 148.5 | 1,453 / 149.9 | 1,329 / 156.5 |
-| 165 | 1,595 / 149.3 | 1,560 / 147.1 | 1,542 / 148.3 | 1,485 / 150.0 | 1,358 / 154.8 |
-| 180 | 1,577 / 149.5 | 1,525 / 147.3 | 1,546 / 148.0 | 1,488 / 149.9 | 1,367 / 154.3 |
-
-Same loaded server, model not restarted. The lock was dropped from NDIV 64
-(1728 MHz) to NDIV 54 (1458 MHz) and put back. Median of 5 for decode, median
-of 3 for the cold curve. `nvidia-smi` printed 1458 MHz on every sample at
-both locks.
-
-| | 1728 MHz | 1458 MHz |
-|---|---:|---:|
-| Structured c1 | 178.5 | 174.2 |
-| Structured c8 | 575.7 | 568.2 |
-| Code c1 | 138.6 | 139.1 |
-| Prose c1 | 90.2 | 93.1 |
-| 2,048 prefill / decode | 1,556 / 149.4 | 1,561 / 145.8 |
-| 32,768 prefill / decode | 1,532 / 148.5 | 1,512 / 144.6 |
-
-A later pass raised the cap to 165 W and left the lock at NDIV 64. The lock
-tool read 1728 MHz for the whole run, and the cap was put back to 140 W at
-the end. It matches the 165 W row above: structured 178.7 / 572.5, code
-136.4 / 315.5, prose 88.2 / 257.1. Cold prefill / decode was 1,596 / 149.5 at
-2,048 tokens, 1,562 / 146.9 at 8,192, 1,541 / 148.7 at 32,768, and 1,483 /
-150.7 at 65,536.
-
-[Qwen3.8-Flash-Next EXL3 5.05 bpw, 2× CMP 170HX](https://github.com/Morrowmake/qwen38-flash-next-cmp170hx-recipe)
-(recipe 1.0.0):
-
-| | |
-|---|---:|
-| 1 user | 152.8 tok/s |
-| 8 users | 674.7 tok/s |
-| cold prefill | 2,651 tok/s |
-
-Their host-allreduce microbench, same engine commit, message size versus NCCL:
-8 KiB 2.04×, 32 KiB 1.06×, 64 KiB 1.59×, 128 KiB 1.43×, 256 KiB 1.41×.
-Messages above 512 KiB stay on NCCL. A DeepSeek verify step is about 10 KiB
-per token (hidden 5120, BF16), so one user is about 60 KiB and eight users
-are about 480 KiB. That microbench is theirs. The serving tables below are
-this port, on 4× CMP 170HX.
-
-## Serving results
-
-Checkpoint: Mia-AiLab DeepSeek-V4.1-Flash-EXL3-3.0bpw. The left column is
-the optimized stack already in service: full CUDA graphs, coop, and NCCL.
-Coop is that optimization, not a stock default. Shipped keeps coop for 1–42
-rows and adds host all-reduce plus the tensor-core dispatch above.
-
-| | Graphs + coop | Shipped | |
-|---|---:|---:|---:|
-| Structured tok/s | 172.65 | 178.27 | +3.3% |
-| Structured cycle | 34.49 ms | 33.41 ms | |
-| Structured acceptance | 5.970 | 5.970 | same text, hash `4e4e24a20477` |
-| Python, 99-token median | 125.11 | 129.54 | +3.5%, hash `4a9988321ab7` |
-| Prose tok/s | 86.13 | 91.17 | +5.9% |
-| Structured c1 / c4 / c8 | 173.2 / 313.8 / 456.4 | 178.8 / 343.9 / 586.6 | c8 +28.5% |
-| Prose c1 / c4 / c8 | 82.1 / 162.5 / 193.3 | 93.3 / 165.8 / 260.2 | c8 +34.6% |
-| Growing c1 TTFT, median | 10.15 s | 8.37 s | 17.5% lower |
-| TTFT at 2,080 tokens | 2.09 s | 1.78 s | |
-| TTFT at 255,424 tokens | 12.63 s | 10.90 s | |
-| KV pool | 672,372 | 616,916 | still 2.35× at 262,144 |
-
-Every one of the 30 growing-context turns was faster. No preemptions.
-Needles passed at 32,768, 131,072, and 261,568 tokens, depths 10 / 50 / 90
-(9/9). The needle string was `cobalt-heron-4417`.
-
-The intermediate arm (fullgraph + host all-reduce, coop for every row) is
-what the tensor-core dispatch was compared with:
-
-| | Host all-reduce | Shipped |
-|---|---:|---:|
-| Structured | 178.34 | 178.27 |
-| Python median (mixed length) | 139.27 | 130.03 |
-| Prose | 90.85 | 91.17 |
-| Structured c4 / c8 | 337.6 / 459.6 | 343.9 / 586.6 |
-| Prose c4 / c8 | 175.2 / 186.4 | 165.8 / 260.2 |
-| TTFT median | 10.27 s | 8.37 s |
-| KV pool | 687,201 | 616,916 |
-
-Structured single-stream is the same hash on all three stacks. The c8 gain
-is the 43–64 row window. The TTFT gain is the prefill kernel.
 
 ## Gate 0
 
