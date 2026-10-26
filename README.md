@@ -16,6 +16,11 @@ Native mixed adds **+4.10% controlled counting** over the already published
 transpose + six-row baseline. The combined C1 path uses split8/core8 attention
 and a captured vocabulary-sharded K5 drafter on top of native mixed.
 
+Attention builds on vLLM's ROCm split-K primitives and PixelML's SM80 adaptation.
+Our contribution is the DS1017-specific tuning, dispatch/capture integration,
+captured drafter path, and measured validation on 4x CMP 170HX.
+[Prior work, named contributors and source lineage](experiments/ds1017-native-mixed-and-split/PRIOR-WORK.md).
+
 Experimental, opt-in: initial numerical/runtime checks passed and the path was evaluated in
 limited matched end-to-end tests; task-quality results were mixed. Split attention changes floating-point reduction and
 is not bit-exact; broader numerical accuracy and task-quality verification is

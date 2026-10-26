@@ -1,5 +1,12 @@
 # Scope and attribution
 
+The [attention prior-work and contribution record](PRIOR-WORK.md) identifies
+the upstream sparse-attention, split-K and SM80 work by Hexiang Wang, Fangzhou
+Ai, Tuukka Sarvi, haosdent, thomaslwang and the vLLM/PixelML contributors, with
+source commits and retained-file hashes. CurtisAccelerate's DS1017 adaptation,
+launch tuning, capture integration, drafter implementation and measurements
+are described separately there.
+
 The native sources derive from Turboderp's ExLlamaV3, upstream commit
 `da68d57de61781e5b74ad68698ac4caf36408d7a`, and the previously published
 six-row transpose experiment. The included MIT license applies to that code.

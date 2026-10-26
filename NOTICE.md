@@ -1,6 +1,6 @@
 # Attribution
 
-The DeepSeek V4.1 Flash port, the row dispatch, the shared workspace, the
+The DeepSeek V4.1 Flash EXL3 MoE integration, row dispatch, shared workspace,
 EXL3 hook, and the CMP 170HX measurements in this repository are by
 CurtisAccelerate (https://github.com/CurtisAccelerate).
 
@@ -41,3 +41,13 @@ source is unchanged and remains Apache-2.0. Hybrid P2P and resident CUDA graph
 pages report separate experiments, without shipping deployment controllers,
 driver patches, model weights or binary modules. NVIDIA's documented graph
 update API underlies the technique; no claim of inventing that API is made.
+
+## October 25 attention and drafter integration
+
+The sparse-attention and split-K primitives come from the vLLM ROCm
+contributors, including Hexiang Wang and Fangzhou Ai, with SM80 adaptation
+by haosdent, thomaslwang and PixelML/sm80vllm contributors. CurtisAccelerate's
+contribution is the DS1017-specific adaptation, tuning, capture/fallback
+integration, captured drafter implementation, and reported validation and
+measurements. The [detailed prior-work record](experiments/ds1017-native-mixed-and-split/PRIOR-WORK.md)
+links the source commits, further contributors and exact dependency snapshots.

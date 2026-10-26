@@ -1,5 +1,12 @@
 # DS1017 native mixed experts and split attention / captured drafter
 
+**Prior work and our contribution:** attention builds on vLLM's ROCm sparse
+attention and Fangzhou Ai's split-K decode primitives, adapted to SM80 by
+haosdent, thomaslwang and PixelML/sm80vllm contributors. CurtisAccelerate developed
+the DS1017-specific dispatch, launch tuning, graph/fallback integration and
+captured drafter path, and performed the reported measurements and validation.
+See [the source lineage and contribution breakdown](PRIOR-WORK.md).
+
 **Experimental, opt-in components for 4× CMP 170HX.** This source bundle is for
 integration into a compatible startup/capture path. It is not a complete server
 image or an installer for the repository's historical launch scripts. The
