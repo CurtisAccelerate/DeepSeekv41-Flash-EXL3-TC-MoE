@@ -1,0 +1,11 @@
+{
+  "original_component_sha256": {
+    "w26_attention_split.py": "f9e623665eb6692ca5ea674192f129181c618d0f8b36939c689605d6ee0832ff",
+    "w26_sampler_bank.py": "2c3570bedcafe39ce48d606bf632035ef724f7037d71848627073386984141c1",
+    "attention_profiles.py": "5cd94a7187ec377540c829371615a21a580950ff3301bd6caa8ec42f81626f3d"
+  },
+  "native_original_header_sha256": "40c683cfe49edf16a26917b492ee16f330e8c47313ccaa2a86fd9fb5979ff474",
+  "measured_cubin_sha256": "edc623dbeea0931aa37507ed8b2b78f12df054a3756d64507479fcab6c8529e3",
+  "upstream_exllamav3_commit": "da68d57de61781e5b74ad68698ac4caf36408d7a",
+  "public_adaptation": "LF normalization; coordinator-dependent selection removed in favor of explicit state arguments; native backend extracted with single-module selection; startup flags added. Algorithm bodies retained. Public adapters have CPU checks, not a new GPU qualification."
+}

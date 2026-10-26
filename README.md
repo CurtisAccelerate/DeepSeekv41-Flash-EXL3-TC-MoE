@@ -7,6 +7,22 @@ Serving recipe for DeepSeek V4.1 Flash, EXL3, tensor parallel 4, on 4× CMP
 Broadwell host, PCIe Gen2 x16, no NVLink. Fastest build measured for this
 mode: these weights, four of these cards, this host.
 
+## DS1017 update — October 25, 2026
+
+[Native mixed experts and experimental split attention / captured drafter](experiments/ds1017-native-mixed-and-split/)
+now have canonical source, explicit default-off component flags, startup
+integration guidance, retained dependencies, generated fixtures and CPU checks.
+Native mixed adds **+4.10% controlled counting** over the already published
+transpose + six-row baseline. The combined C1 path uses split8/core8 attention
+and a captured vocabulary-sharded K5 drafter on top of native mixed.
+
+Experimental, opt-in: initial numerical/runtime checks passed and the path was evaluated in
+limited matched end-to-end tests; task-quality results were mixed. Split attention changes floating-point reduction and
+is not bit-exact; broader numerical accuracy and task-quality verification is
+still warranted. The bundle requires serving-specific startup/capture
+integration and does not enable the historical launch scripts by itself.
+See the [1017 performance and quality report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/tree/main/benchmarks/2026-10-25).
+
 ## Benchmarks
 
 Shipped stack. Coop through 42 rows, tensor-core MoE from 43 rows through
