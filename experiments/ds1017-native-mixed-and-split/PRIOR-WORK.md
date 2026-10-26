@@ -70,12 +70,33 @@ The complete files include integration differences and are **not** described as
 byte-identical copies of that commit. Use the recorded snapshot hashes for
 compatibility, rather than assuming a current upstream checkout is interchangeable.
 
-## Other foundations
+## DeepSeek build, expert kernels and loading: separate contributions
 
-[Morrowmake](https://github.com/Morrowmake/vllm-cmp170hx) supplies the previously
-credited tensor-core EXL3 MoE and host-staged all-reduce foundations.
-[Turboderp/ExLlamaV3](https://github.com/turboderp-org/exllamav3) supplies the EXL3
-codec and cooperative expert-kernel lineage. DeepSeek supplies the model and
-DSpark architecture; LibertAI supplies the measured routed-expert quantization.
-See [NOTICE.md](NOTICE.md) and the [repository notice](../../NOTICE.md) for
-the component licenses and existing revision pins.
+**CurtisAccelerate implemented and published the DeepSeek V4.1 Flash EXL3 MoE
+port and serving build, followed by the 1017 weight recipe and subsequent
+optimizations.** The original six-row transpose changes, native-mixed K2/K3
+specialization, Engram retention integration and resident optimization workflow
+are CurtisAccelerate's work on the respective upstream foundations. They should
+not be attributed wholesale to an upstream engine or kernel author.
+
+| Component | Upstream foundation | CurtisAccelerate's implementation |
+|---|---|---|
+| Earlier tensor-core/prefill MoE path in [`vllm_exl3/tc_moe`](../../vllm_exl3/tc_moe/) | Morrowmake's [`moe_v2.cu` and `moe_prefill.cu`](https://github.com/Morrowmake/vllm-cmp170hx/tree/18305948acba3f4c4d912cdd56f2202d2ebd94e8/csrc/exl3), originally specialized to hidden 2560, intermediate 640 and bits_x2 10; EXL3 codec from Turboderp. | DeepSeek port to hidden 5120, intermediate 512/640 and K2/K3; register-spill fixes; row dispatch; shared workspace; EXL3 hook and validation. The DeepSeek port is ours, while the retained tensor-core kernel foundations remain credited to Morrowmake. |
+| [Six-row cooperative transpose](../exl3-cooperative-decode/) and [native-mixed expert specialization](native/instantiate.cu) | Turboderp's ExLlamaV3 cooperative expert kernels at `da68d57de61781e5b74ad68698ac4caf36408d7a`. | Our six-row transpose/layout changes and later guarded K2 / specialized K3 implementation, shape guards, integration and bit-exact fixture validation. This is a separate lineage from Morrowmake's earlier tensor-core/prefill operators. |
+| [Six-row host all-reduce tuning](../host-allreduce-six-row/) | Morrowmake's host-staged collective. | Our six-row launch policy, shape guard and paired measurements; the underlying CUDA reduction source is unchanged. |
+| [Resident CUDA-graph optimization](../../docs/resident-cuda-graph-optimization.md) | NVIDIA's graph-update APIs and the serving engine's graphs. | Our retained graph/node ownership, distributed switching/rollback integration and no-reload A/B workflow. |
+
+**Engram/n-gram retention is also our loading integration.** We implemented
+persistent shared host backing and worker reattachment so compatible restarts
+can reuse the already staged Engram payload instead of rereading/rebuilding it.
+The four-rank full-payload attachment proof verified bit-exact native gathers,
+unchanged payload hashes and backing retained after child exit. This is separate
+from the EXL3 on-disk arena cache and from retaining GPU weights during same-worker
+graph updates. It requires the correct Engram payload and surviving backing;
+it is not a claim of GPU-weight retention across worker replacement or reboot.
+The deployment-specific retention/controller implementation is not bundled as
+a standalone installer in this publication.
+
+DeepSeek supplies the model, Engram tables and DSpark architecture; LibertAI
+supplies the measured routed-expert quantization. See [NOTICE.md](NOTICE.md)
+and the [repository notice](../../NOTICE.md) for licenses and revision pins.

@@ -56,6 +56,7 @@ the target topology remain necessary before adopting the source adaptation.
 ## Attribution
 
 Original host-staged all-reduce: Morrowmake and vLLM contributors, Apache-2.0.
-Launch-policy experiment and measurements: project maintainers, with AI assistance.
+Six-row launch-policy implementation, experiment and measurements:
+CurtisAccelerate, with AI assistance.
 The repository [Apache-2.0 license](../../LICENSE) and [NOTICE](../../NOTICE.md)
 apply. The separate EXL transpose component retains its MIT notice.

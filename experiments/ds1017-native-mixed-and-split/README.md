@@ -27,6 +27,9 @@ into a new server has not been GPU-qualified by this publication.
 
 1. **Native mixed experts:** K2 retains guarded parameters and writer-fence
    handling; K3 specializes the fixed eligible six-row native MoE contract.
+   These are CurtisAccelerate's changes on Turboderp's ExLlamaV3 cooperative
+   kernels, following our six-row transpose work. Their lineage is separate
+   from the earlier DeepSeek tensor-core/prefill port of Morrowmake's operators.
    The K3 path folds fixed shape/activation/nullable-field branches. It is not
    safe as an unconditional replacement for generic EXL3 dispatch. The included
    adapter checks the original 36-argument call, SM80, six rows, top-6, hidden

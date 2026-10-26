@@ -19,8 +19,13 @@ their license is included in `retained/LICENSE`. They are exact dependencies,
 not newly invented attention kernels. The split component changes scheduling,
 split/reduction geometry and capture integration around those kernels.
 
-The host-allreduce and existing serving foundations are credited to Morrowmake,
-with SM80 attention work from PixelML/sm80vllm and contributors to vLLM. DeepSeek
+The host-allreduce foundation is credited to Morrowmake. CurtisAccelerate's
+DeepSeek port of the earlier tensor-core/prefill operators has Morrowmake source
+lineage; the six-row transpose and native-mixed changes in this component are
+our implementations on Turboderp's cooperative kernels. Our DeepSeek serving
+build and Engram retention integration are also documented in the
+[contribution breakdown](PRIOR-WORK.md#deepseek-build-expert-kernels-and-loading-separate-contributions).
+SM80 attention work comes from PixelML/sm80vllm and vLLM contributors. DeepSeek
 provides the checkpoint and DSpark architecture; LibertAI provides the EXL3
 2.9 bpw routed-expert pack. No weights or model-generated task archives are
 included here.

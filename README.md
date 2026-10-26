@@ -2,6 +2,11 @@
 
 [CurtisAccelerate](https://github.com/CurtisAccelerate).
 
+CurtisAccelerate built and published this DeepSeek EXL3 MoE port and serving
+integration, then developed the six-row transpose/native-mixed optimizations,
+Engram retention/reattachment and resident A/B workflow. Upstream kernel authors
+remain credited by component in the [contribution breakdown](experiments/ds1017-native-mixed-and-split/PRIOR-WORK.md#deepseek-build-expert-kernels-and-loading-separate-contributions).
+
 Serving recipe for DeepSeek V4.1 Flash, EXL3, tensor parallel 4, on 4× CMP
 170HX (sm_80, 140 W, HBM locked at 1728 MHz) in a 2× Xeon E5-2689 v4
 Broadwell host, PCIe Gen2 x16, no NVLink. Fastest build measured for this

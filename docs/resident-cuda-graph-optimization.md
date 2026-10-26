@@ -72,8 +72,11 @@ and memory ownership. Changes to the quant/model, scratch layout, topology or
 driver need separate integration and may require recapture or restart. An
 unsafe CUDA error can still require worker recovery.
 
-Persistent Engram backing is a separate loading optimization: it can survive
-worker replacement while its backing remains alive. Same-worker graph updates
+CurtisAccelerate's persistent Engram/n-gram backing and reattachment integration
+is a separate loading optimization: it can survive worker replacement while
+its backing remains alive. The full-payload four-rank attachment proof checked
+bit-exact native gathers, unchanged payload hashes and retention after child
+exit. Same-worker graph updates
 avoid even reattachment. This publication does not claim weight hot-swapping,
 reboot persistence, or a general GPU IPC keeper in the measured server.
 
