@@ -33,6 +33,13 @@ still warranted. The bundle requires serving-specific startup/capture
 integration and does not enable the historical launch scripts by itself.
 See the [1017 performance and quality report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/tree/main/benchmarks/2026-10-25).
 
+## October 26 serving selection
+
+The [October 26 1017 report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-10-26/README.md)
+is the 2-8 user measurement. The serving choice, and the fact that this tree
+is still not a pullable image, are in
+[SERVING-2026-10-26.md](experiments/ds1017-native-mixed-and-split/SERVING-2026-10-26.md).
+
 ## Benchmarks
 
 Shipped stack. Coop through 42 rows, tensor-core MoE from 43 rows through
