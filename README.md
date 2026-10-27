@@ -39,6 +39,7 @@ The [October 26 1017 report](https://github.com/CurtisAccelerate/DeepSeekv41-Fla
 is the 2-8 user measurement. The serving choice, and the fact that this tree
 is still not a pullable image, are in
 [SERVING-2026-10-26.md](experiments/ds1017-native-mixed-and-split/SERVING-2026-10-26.md).
+The 2-8 user source and its flags are in [experiments/ds1017-r2-b2-b8](experiments/ds1017-r2-b2-b8/README.md). DSV41_R2 defaults off.
 
 ## Benchmarks
 
