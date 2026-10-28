@@ -2,7 +2,8 @@
 
 [CurtisAccelerate](https://github.com/CurtisAccelerate).
 
-CurtisAccelerate built and published this DeepSeek EXL3 MoE port and serving
+Curtis White ([CurtisAccelerate](https://github.com/CurtisAccelerate))
+built and published this DeepSeek EXL3 MoE port and serving
 integration, then developed the six-row transpose/native-mixed optimizations,
 Engram retention/reattachment and resident A/B workflow. Upstream kernel authors
 remain credited by component in the [contribution breakdown](experiments/ds1017-native-mixed-and-split/PRIOR-WORK.md#deepseek-build-expert-kernels-and-loading-separate-contributions).
