@@ -38,7 +38,8 @@ See the [1017 performance and quality report](https://github.com/CurtisAccelerat
 
 A rebuilt gate, up, and down kernel for 2–6 user decode on the 1017 serve.
 It is bit-exact with the kernel it replaces. Morrow decode at 140 W is ahead
-by about 6–15% at those user counts. One user and 7–8 users are unchanged.
+by about 6–15% at those user counts. The Spark suite aggregate is ahead
+by about 11–26% at the same counts. One user and 7–8 users are unchanged.
 [October 28 tables](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-10-28/README.md).
 The source is [experiments/ds1017-decode-gates](experiments/ds1017-decode-gates/README.md).
 Cloning this tree does not load it.

@@ -27,7 +27,8 @@ compiled and are not a captured graph. Seven and eight users are 48 rows and
 take the tensor-core path.
 
 The kernel matches the expert kernel it replaces bit for bit on the shapes
-it serves. The decode gain is in the 1017 tables: about 6–15% at 2–6 users.
+it serves. The decode gain is in the 1017 tables: about 6–15% on Morrow at 2–6 users,
+and about 11–26% on the Spark suite aggregate at those same counts.
 
 ## Lineage
 
