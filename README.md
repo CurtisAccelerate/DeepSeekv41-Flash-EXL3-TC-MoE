@@ -13,6 +13,24 @@ Serving recipe for DeepSeek V4.1 Flash, EXL3, tensor parallel 4, on 4× CMP
 Broadwell host, PCIe Gen2 x16, no NVLink. Fastest build measured for this
 mode: these weights, four of these cards, this host.
 
+## Expert gates — October 28, 2026
+
+A rebuilt gate, up, and down kernel for 2–6 user decode on the 1017 serve.
+It is bit-exact with the kernel it replaces. Morrow decode at 140 W is ahead
+by about 6–15% at those user counts. The Spark suite aggregate is ahead
+by about 11–26% at the same counts. One user and 7–8 users are unchanged.
+[October 28 tables](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-10-28/README.md).
+The source is [experiments/ds1017-decode-gates](experiments/ds1017-decode-gates/README.md).
+Cloning this tree does not load it.
+
+## October 26 serving selection
+
+The [October 26 1017 report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-10-26/README.md)
+is the 2-8 user measurement. The serving choice, and the fact that this tree
+is still not a pullable image, are in
+[SERVING-2026-10-26.md](experiments/ds1017-native-mixed-and-split/SERVING-2026-10-26.md).
+The 2-8 user source and its flags are in [experiments/ds1017-r2-b2-b8](experiments/ds1017-r2-b2-b8/README.md). DSV41_R2 defaults off.
+
 ## DS1017 update — October 25, 2026
 
 [Native mixed experts and experimental split attention / captured drafter](experiments/ds1017-native-mixed-and-split/)
@@ -34,23 +52,43 @@ still warranted. The bundle requires serving-specific startup/capture
 integration and does not enable the historical launch scripts by itself.
 See the [1017 performance and quality report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/tree/main/benchmarks/2026-10-25).
 
-## Expert gates — October 28, 2026
+## Kernel and resident-graph update — October 22, 2026
 
-A rebuilt gate, up, and down kernel for 2–6 user decode on the 1017 serve.
-It is bit-exact with the kernel it replaces. Morrow decode at 140 W is ahead
-by about 6–15% at those user counts. The Spark suite aggregate is ahead
-by about 11–26% at the same counts. One user and 7–8 users are unchanged.
-[October 28 tables](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-10-28/README.md).
-The source is [experiments/ds1017-decode-gates](experiments/ds1017-decode-gates/README.md).
-Cloning this tree does not load it.
+**Small measured decode gains, plus kernel A/B testing without reloading weights.**
+On DeepSeek V4.1 Flash 1017, controlled counting confirmed **+2.86%** from the
+EXL transpose change and **+1.74% further** from six-row host all-reduce tuning.
+A separate eight-pair confirmation measured **184.21 → 188.13 tok/s (+2.21%)**
+for the host tuning. These are counting-workload gains, not general agent speedups.
 
-## October 26 serving selection
+- [New six-row host all-reduce source patch](experiments/host-allreduce-six-row/):
+  existing two-shot kernel, one block, 512 threads, exact SM80/TP4/BF16 shape guard.
+- [Hybrid P2P on Broadwell](docs/hybrid-p2p-broadwell.md): local GPU pairs plus
+  host communication across sockets; **572.60 → 586.31 C8 counting tok/s (+2.43%)**.
+  Only the 48-row path won qualification; large-prefill paths remain unchanged.
+- [Online CUDA graph optimization](docs/resident-cuda-graph-optimization.md):
+  compatible kernel registration across four ranks in about **0.30 s**, with
+  **600 node updates/rank in 2.7–3.9 ms**, no model reload or graph recapture.
 
-The [October 26 1017 report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-10-26/README.md)
-is the 2-8 user measurement. The serving choice, and the fact that this tree
-is still not a pullable image, are in
-[SERVING-2026-10-26.md](experiments/ds1017-native-mixed-and-split/SERVING-2026-10-26.md).
-The 2-8 user source and its flags are in [experiments/ds1017-r2-b2-b8](experiments/ds1017-r2-b2-b8/README.md). DSV41_R2 defaults off.
+The [1017 benchmark report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-10-22/README.md)
+includes all limitations: the full eight-task C8 aggregate was **271.57 tok/s**,
+versus the previous **273.48** and published four-Spark **221.66**. No broad
+throughput improvement is claimed. Source experiments are opt-in; existing
+launch defaults are unchanged. The historical checkpoint results below retain
+their original scope.
+
+## Cooperative-decode experiment — October 21, 2026
+
+The [six-row ExLlamaV3 cooperative-decode experiment](experiments/exl3-cooperative-decode/)
+is maintained here with its measured source patch, CPU mapping check, source
+identities and qualification notes. It transposes MMA operands on the tested
+SM80 K2/K3 path. This is a separate experiment from the `tc_moe` kernels below;
+the existing hook and launch scripts do not enable it.
+
+The model-specific [controlled sweep tables](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/e560d05caa54969b5fc664056202bea863ca9513/benchmarks/2026-10-21/kernel-sweeps.md)
+and [4× CMP 170HX versus 4× DGX Spark comparison](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/e560d05caa54969b5fc664056202bea863ca9513/benchmarks/2026-10-21/spark-comparison.md)
+remain in the 1017 repository. The experiment measured modest decode gains;
+its source template still needs a guard matching the tested serving scope
+before general integration.
 
 ## Benchmarks
 
@@ -183,44 +221,6 @@ serve left official.
 
 The 1017 recipe, the hybrid config, the launch script, and those measurements
 are [DeepSeekv41-Flash-1017-EXL3-CMP170HX](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX).
-
-## Kernel and resident-graph update — October 22, 2026
-
-**Small measured decode gains, plus kernel A/B testing without reloading weights.**
-On DeepSeek V4.1 Flash 1017, controlled counting confirmed **+2.86%** from the
-EXL transpose change and **+1.74% further** from six-row host all-reduce tuning.
-A separate eight-pair confirmation measured **184.21 → 188.13 tok/s (+2.21%)**
-for the host tuning. These are counting-workload gains, not general agent speedups.
-
-- [New six-row host all-reduce source patch](experiments/host-allreduce-six-row/):
-  existing two-shot kernel, one block, 512 threads, exact SM80/TP4/BF16 shape guard.
-- [Hybrid P2P on Broadwell](docs/hybrid-p2p-broadwell.md): local GPU pairs plus
-  host communication across sockets; **572.60 → 586.31 C8 counting tok/s (+2.43%)**.
-  Only the 48-row path won qualification; large-prefill paths remain unchanged.
-- [Online CUDA graph optimization](docs/resident-cuda-graph-optimization.md):
-  compatible kernel registration across four ranks in about **0.30 s**, with
-  **600 node updates/rank in 2.7–3.9 ms**, no model reload or graph recapture.
-
-The [1017 benchmark report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-10-22/README.md)
-includes all limitations: the full eight-task C8 aggregate was **271.57 tok/s**,
-versus the previous **273.48** and published four-Spark **221.66**. No broad
-throughput improvement is claimed. Source experiments are opt-in; existing
-launch defaults are unchanged. The historical checkpoint results below retain
-their original scope.
-
-## Cooperative-decode experiment — October 21, 2026
-
-The [six-row ExLlamaV3 cooperative-decode experiment](experiments/exl3-cooperative-decode/)
-is maintained here with its measured source patch, CPU mapping check, source
-identities and qualification notes. It transposes MMA operands on the tested
-SM80 K2/K3 path. This is a separate experiment from the `tc_moe` kernels below;
-the existing hook and launch scripts do not enable it.
-
-The model-specific [controlled sweep tables](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/e560d05caa54969b5fc664056202bea863ca9513/benchmarks/2026-10-21/kernel-sweeps.md)
-and [4× CMP 170HX versus 4× DGX Spark comparison](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/e560d05caa54969b5fc664056202bea863ca9513/benchmarks/2026-10-21/spark-comparison.md)
-remain in the 1017 repository. The experiment measured modest decode gains;
-its source template still needs a guard matching the tested serving scope
-before general integration.
 
 ## What is on
 
