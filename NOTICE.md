@@ -66,3 +66,13 @@ contribution is the DS1017-specific adaptation, tuning, capture/fallback
 integration, captured drafter implementation, and reported validation and
 measurements. The [detailed prior-work record](experiments/ds1017-native-mixed-and-split/PRIOR-WORK.md)
 links the source commits, further contributors and exact dependency snapshots.
+
+## November 1 A/B/C and full prefill fusion
+
+Selected FP8 target/draft kernels and fused Markov selection derive from
+GNmac-lab's MIT-licensed DS1017 recipe, integrated into the retained serving
+stack with source, graph, sampling and parity guards. The full direct integer
+ragged integration and its ratio-1/2/sliding-window coverage are documented
+separately from the unchanged floating attention and Morrowmake expert kernels.
+See the [component notice](experiments/ds1017-bf16-full-fusion/NOTICE.md) for
+exact source/image pins, the included GNmac MIT grant and contribution boundaries.

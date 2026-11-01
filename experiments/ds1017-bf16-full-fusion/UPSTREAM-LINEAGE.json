@@ -1,0 +1,585 @@
+{
+  "donor_image": "sha256:cdaad5bb40b669f1cee7b44fa5f79f61332fbc021bf56c0a3e88df83d266fddd",
+  "reference_image": "sha256:6aaf027853aad0d170260f74930a45c57511c2262cffb552fefc49edaaf79dc7",
+  "reference_repo_commit": "90c577884ce7e75734896e422607c63a15d8fba9",
+  "scope": "Per-file retained source lineage where recorded. Other integration/newprefill paths are explained in NOTICE; no inference of an image-to-Git identity.",
+  "files": [
+    {
+      "exported_path": "source/package/donor-cuda/dsv41_fp8w/bind.cpp",
+      "current_sha256": "5a48096d6ec22cab3f5dbbbd8122ac6e960f59a2e4959251585f2050687e3f3e",
+      "upstream": [
+        {
+          "source": "gnmac-build-patches/dsv41_fp8w/bind.cpp",
+          "sha256": "5a48096d6ec22cab3f5dbbbd8122ac6e960f59a2e4959251585f2050687e3f3e",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/dsv41_fp8w/fp8w.cu",
+      "current_sha256": "ae49e678f03f91034753bac2a5745a3a0090b07305388811b580c93c8e7bc349",
+      "upstream": [
+        {
+          "source": "gnmac-build-patches/dsv41_fp8w/fp8w.cu",
+          "sha256": "ae49e678f03f91034753bac2a5745a3a0090b07305388811b580c93c8e7bc349",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/dsv41_fp8w/setup.py",
+      "current_sha256": "602abaff8d65b4e2f98eddd96d45abe52a3d1343365ad810e28849664b6fdccb",
+      "upstream": [
+        {
+          "source": "gnmac-build-patches/dsv41_fp8w/setup.py",
+          "sha256": "602abaff8d65b4e2f98eddd96d45abe52a3d1343365ad810e28849664b6fdccb",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/dsv41_woa/bind.cpp",
+      "current_sha256": "d69f9922ded9fee3084af25b6a2942025f1a02a8376570d4cdc315a9fdfe662a",
+      "upstream": [
+        {
+          "source": "gnmac-build-patches/dsv41_woa/bind.cpp",
+          "sha256": "d69f9922ded9fee3084af25b6a2942025f1a02a8376570d4cdc315a9fdfe662a",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/dsv41_woa/setup.py",
+      "current_sha256": "4f299a68a754273d6551b7e375a466d39bd6c3ef7b9b9cf79950a92815764db7",
+      "upstream": [
+        {
+          "source": "gnmac-build-patches/dsv41_woa/setup.py",
+          "sha256": "4f299a68a754273d6551b7e375a466d39bd6c3ef7b9b9cf79950a92815764db7",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/dsv41_woa/woa.cu",
+      "current_sha256": "61c7f08587c9036f18f832feb889e35432eb04c36d7ee6462d64efba0b302349",
+      "upstream": [
+        {
+          "source": "gnmac-build-patches/dsv41_woa/woa.cu",
+          "sha256": "61c7f08587c9036f18f832feb889e35432eb04c36d7ee6462d64efba0b302349",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/moe_v2_try/build_v2try.py",
+      "current_sha256": "785dbb5b6a5ba1f196aacfda62914db44cd45004fc26c7eab0e1fdcfb0419333",
+      "upstream": [
+        {
+          "source": "gnmac-cuda-tree/moe_v2_try/build_v2try.py",
+          "sha256": "785dbb5b6a5ba1f196aacfda62914db44cd45004fc26c7eab0e1fdcfb0419333",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/moe_v2_try/moe_v2_try/codec.cuh",
+      "current_sha256": "3e2175e2a79c5cbf99c15ac74f14f32b01f12c01f7c84c994b3d521f223afd5c",
+      "upstream": [
+        {
+          "source": "gnmac-cuda-tree/moe_v2_try/moe_v2_try/codec.cuh",
+          "sha256": "3e2175e2a79c5cbf99c15ac74f14f32b01f12c01f7c84c994b3d521f223afd5c",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/moe_v2_try/moe_v2_try/codec_moe_v2.cuh",
+      "current_sha256": "6ba79e0090868903d3b7bc8bcfbf00efa823ebd27d926f71116324749212d5de",
+      "upstream": [
+        {
+          "source": "gnmac-cuda-tree/moe_v2_try/moe_v2_try/codec_moe_v2.cuh",
+          "sha256": "6ba79e0090868903d3b7bc8bcfbf00efa823ebd27d926f71116324749212d5de",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/moe_v2_try/moe_v2_try/common.h",
+      "current_sha256": "c68741cb75ca8b8e0a4778104d109920f668868126f17e8e7211b48001b1a173",
+      "upstream": [
+        {
+          "source": "gnmac-cuda-tree/moe_v2_try/moe_v2_try/common.h",
+          "sha256": "c68741cb75ca8b8e0a4778104d109920f668868126f17e8e7211b48001b1a173",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/moe_v2_try/moe_v2_try/ops.h",
+      "current_sha256": "04ccb83ac37408245fb0d2e916ebd649afa327e7e9d07e6141eb9c8a47109208",
+      "upstream": [
+        {
+          "source": "gnmac-cuda-tree/moe_v2_try/moe_v2_try/ops.h",
+          "sha256": "04ccb83ac37408245fb0d2e916ebd649afa327e7e9d07e6141eb9c8a47109208",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/moe_v2_try/moe_v2_try.cu",
+      "current_sha256": "cbbeca2b317b569d4c24170d4fa789cd58b229f7f0234c15dc221c19ffacb65e",
+      "upstream": [
+        {
+          "source": "gnmac-cuda-tree/moe_v2_try/moe_v2_try.cu",
+          "sha256": "cbbeca2b317b569d4c24170d4fa789cd58b229f7f0234c15dc221c19ffacb65e",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/tc_moe_v2try/build_v2try.py",
+      "current_sha256": "785dbb5b6a5ba1f196aacfda62914db44cd45004fc26c7eab0e1fdcfb0419333",
+      "upstream": [
+        {
+          "source": "gnmac-build-patches/tc_moe_v2try/build_v2try.py",
+          "sha256": "785dbb5b6a5ba1f196aacfda62914db44cd45004fc26c7eab0e1fdcfb0419333",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/tc_moe_v2try/moe_v2_try/codec.cuh",
+      "current_sha256": "3e2175e2a79c5cbf99c15ac74f14f32b01f12c01f7c84c994b3d521f223afd5c",
+      "upstream": [
+        {
+          "source": "gnmac-build-patches/tc_moe_v2try/moe_v2_try/codec.cuh",
+          "sha256": "3e2175e2a79c5cbf99c15ac74f14f32b01f12c01f7c84c994b3d521f223afd5c",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/tc_moe_v2try/moe_v2_try/codec_moe_v2.cuh",
+      "current_sha256": "6ba79e0090868903d3b7bc8bcfbf00efa823ebd27d926f71116324749212d5de",
+      "upstream": [
+        {
+          "source": "gnmac-build-patches/tc_moe_v2try/moe_v2_try/codec_moe_v2.cuh",
+          "sha256": "6ba79e0090868903d3b7bc8bcfbf00efa823ebd27d926f71116324749212d5de",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/tc_moe_v2try/moe_v2_try/common.h",
+      "current_sha256": "c68741cb75ca8b8e0a4778104d109920f668868126f17e8e7211b48001b1a173",
+      "upstream": [
+        {
+          "source": "gnmac-build-patches/tc_moe_v2try/moe_v2_try/common.h",
+          "sha256": "c68741cb75ca8b8e0a4778104d109920f668868126f17e8e7211b48001b1a173",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/tc_moe_v2try/moe_v2_try/ops.h",
+      "current_sha256": "04ccb83ac37408245fb0d2e916ebd649afa327e7e9d07e6141eb9c8a47109208",
+      "upstream": [
+        {
+          "source": "gnmac-build-patches/tc_moe_v2try/moe_v2_try/ops.h",
+          "sha256": "04ccb83ac37408245fb0d2e916ebd649afa327e7e9d07e6141eb9c8a47109208",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/donor-cuda/tc_moe_v2try/moe_v2_try.cu",
+      "current_sha256": "cbbeca2b317b569d4c24170d4fa789cd58b229f7f0234c15dc221c19ffacb65e",
+      "upstream": [
+        {
+          "source": "gnmac-build-patches/tc_moe_v2try/moe_v2_try.cu",
+          "sha256": "cbbeca2b317b569d4c24170d4fa789cd58b229f7f0234c15dc221c19ffacb65e",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/host-overlay/integration/w9_exl_ab/fold_serve.py",
+      "current_sha256": "4fd2ece81de428012f30ddeaa01210260817b10121ef6bef96e29cde0be1fe60",
+      "upstream": [
+        {
+          "source": "ours-staging/integration/w9_exl_ab/fold_serve.py",
+          "sha256": "a8308dc6943b4fb5f3141e511923afeec640af663d7035474472bd38aed08fda",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/host-overlay/integration/w9_exl_ab/worker_extension.py",
+      "current_sha256": "f6648a2829daf2020068ed3b0579974eeee876864e7bb3fca93bebf85e24a1b1",
+      "upstream": [
+        {
+          "source": "ours-staging/integration/w9_exl_ab/worker_extension.py",
+          "sha256": "7ef19713091738d4ee778f7e385ea0277615b9a19a4b5d576a1ee75dd07d225f",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/host-overlay/resident-api/w9_resident_api/control.py",
+      "current_sha256": "d6a12b2269deee40cf35068572b248559de9b30a064f6008f2109a53b87886d2",
+      "upstream": [
+        {
+          "source": "ours-staging/resident-api/w9_resident_api/control.py",
+          "sha256": "9b660c6d14d8f74f7a0b6af3a9fb853444f44ec55fcc35e4870f17a7bd4a28da",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/cumulative_native.py",
+      "current_sha256": "69a9783d2859d26f0b1d9d4d9a3c285a962d632a5637cbee067fff0422480c40",
+      "upstream": [
+        {
+          "source": "ours-runtime/hybrid/cumulative_native.py",
+          "sha256": "69a9783d2859d26f0b1d9d4d9a3c285a962d632a5637cbee067fff0422480c40",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/cumulative_worker.py",
+      "current_sha256": "0936daf97f96fe6cfed6f328e6d649335ab8051209979d6c13cb47ea56515f3f",
+      "upstream": [
+        {
+          "source": "ours-runtime/hybrid/cumulative_worker.py",
+          "sha256": "0936daf97f96fe6cfed6f328e6d649335ab8051209979d6c13cb47ea56515f3f",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/dspark_proposer.py",
+      "current_sha256": "4d2b7bc034dce1d663822b5b1ae35f240eaa93a9378b7c25ad37022c9dbfe215",
+      "upstream": [
+        {
+          "source": "ours-runtime/hybrid/dspark_proposer.py",
+          "sha256": "d85f86490ade3388ca44aff3fd1c565f61f457c9a509aeafe57b00b74b002de5",
+          "same_bytes_as_export": false
+        },
+        {
+          "source": "gnmac-runtime/hybrid/dspark_proposer.py",
+          "sha256": "df70ba18b1887b1efe88ee5ab6c2f31494b419ff2fb1cf77087be585419f357e",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/dsv41_fp8_gemv.py",
+      "current_sha256": "0b60deadb150381be7fec11449e0edf81ae200291f0891208aab50cb4d495a5d",
+      "upstream": [
+        {
+          "source": "gnmac-runtime/hybrid/dsv41_fp8_gemv.py",
+          "sha256": "0b60deadb150381be7fec11449e0edf81ae200291f0891208aab50cb4d495a5d",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/dsv41_markov.py",
+      "current_sha256": "79e7aa8e3308a25831e871ac834124fd4a5e3564561d77ea9cb4230d6a3760c3",
+      "upstream": [
+        {
+          "source": "gnmac-runtime/hybrid/dsv41_markov.py",
+          "sha256": "79e7aa8e3308a25831e871ac834124fd4a5e3564561d77ea9cb4230d6a3760c3",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/dsv41_r1.py",
+      "current_sha256": "e112b065f76d80e61e40b93d6a7128c4ead23954ec47c04b397eb943ca79d5f0",
+      "upstream": [
+        {
+          "source": "ours-runtime/hybrid/dsv41_r1.py",
+          "sha256": "e112b065f76d80e61e40b93d6a7128c4ead23954ec47c04b397eb943ca79d5f0",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/r2_attention.py",
+      "current_sha256": "b9ec1ce5090e589238453c9209dae8579965e80aab5ca626d741f6328537c7df",
+      "upstream": [
+        {
+          "source": "ours-runtime/hybrid/r2_attention.py",
+          "sha256": "350b3fbb3375e01ce3886ab08476c023fff6a5324a723c9fe39e1fa0b4f473eb",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/r2_bank.py",
+      "current_sha256": "a81ca933249dcdecc81534fa0f6c7f12d9c6c0a45489eb74de423366101c3a5d",
+      "upstream": [
+        {
+          "source": "ours-runtime/hybrid/r2_bank.py",
+          "sha256": "a81ca933249dcdecc81534fa0f6c7f12d9c6c0a45489eb74de423366101c3a5d",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/r2_contract.py",
+      "current_sha256": "fa8822508981883e8208b562c3e46b4b96fbec197dfa48cd4b97090f87748843",
+      "upstream": [
+        {
+          "source": "ours-runtime/hybrid/r2_contract.py",
+          "sha256": "fa8822508981883e8208b562c3e46b4b96fbec197dfa48cd4b97090f87748843",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/r2_experts.py",
+      "current_sha256": "ee6d0ca26a38d114d87ce4dc62435f42abc2ea735490a98ec81841e8b6b4317e",
+      "upstream": [
+        {
+          "source": "ours-runtime/hybrid/r2_experts.py",
+          "sha256": "ee6d0ca26a38d114d87ce4dc62435f42abc2ea735490a98ec81841e8b6b4317e",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/r2_sampler.py",
+      "current_sha256": "b504f167f6a24e1fa9ffda1c722a8a245fe1c8f32afb7003c36efb643aa3f18c",
+      "upstream": [
+        {
+          "source": "ours-runtime/hybrid/r2_sampler.py",
+          "sha256": "b504f167f6a24e1fa9ffda1c722a8a245fe1c8f32afb7003c36efb643aa3f18c",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/r2_startup.py",
+      "current_sha256": "74e96202b62474d60a9ef21264eee497d8174d267f5c14599c85d2e48b9b2a0b",
+      "upstream": [
+        {
+          "source": "ours-runtime/hybrid/r2_startup.py",
+          "sha256": "74e96202b62474d60a9ef21264eee497d8174d267f5c14599c85d2e48b9b2a0b",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/hybrid/w26_sampler_bank.py",
+      "current_sha256": "378413b1903da0ffea0e8c4a315e06b88171f9a8add395d28b629053aa98d8b3",
+      "upstream": [
+        {
+          "source": "ours-runtime/hybrid/w26_sampler_bank.py",
+          "sha256": "378413b1903da0ffea0e8c4a315e06b88171f9a8add395d28b629053aa98d8b3",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/opt/dsv41-tc-moe/exl3_tc_hook.py",
+      "current_sha256": "0fd676958c111102c21d1d6dc4914175728050c42d00068ba5a6a9c460abdcf5",
+      "upstream": [
+        {
+          "source": "ours-runtime/opt/dsv41-tc-moe/exl3_tc_hook.py",
+          "sha256": "0fd676958c111102c21d1d6dc4914175728050c42d00068ba5a6a9c460abdcf5",
+          "same_bytes_as_export": true
+        },
+        {
+          "source": "gnmac-runtime/opt/dsv41-tc-moe/exl3_tc_hook.py",
+          "sha256": "457802fd6d36a52271e8e6c21701a8168ae07fadd0eb0688af42ed99018eb9a4",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/mxfp8/dsv41_fp8w.py",
+      "current_sha256": "91d3fc4c9624c2ed857cfb6afca13a8ed7301a2303c237cec80cb448eaaebbf7",
+      "upstream": [
+        {
+          "source": "gnmac-runtime/vllm/model_executor/kernels/linear/mxfp8/dsv41_fp8w.py",
+          "sha256": "ff0b8ad881894c2fadfb5aa73fba2e5b8a13b180a8e57b3bbe0812e51258888f",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/mxfp8/marlin.py",
+      "current_sha256": "be5231046fc60a584c0ba9c5001c81358b3397939eeffd142ee55439ff863b32",
+      "upstream": [
+        {
+          "source": "ours-runtime/vllm/model_executor/kernels/linear/mxfp8/marlin.py",
+          "sha256": "881d5e8a15eb5968ebce7676590639de64ba88e50d0f6677b1a65f4dfe866a78",
+          "same_bytes_as_export": false
+        },
+        {
+          "source": "gnmac-runtime/vllm/model_executor/kernels/linear/mxfp8/marlin.py",
+          "sha256": "bdb26a266928d8a47dd6c6892ed6115c05e40f0cc4e4ad9233bd269c7bfedb0b",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/mxfp8/Mxfp8LinearKernel.py",
+      "current_sha256": "4b782c28be0a5b57a07e4c5d5eff021d8c3bdd26fd8fcff1def2aab72ae33ad3",
+      "upstream": [
+        {
+          "source": "ours-runtime/vllm/model_executor/kernels/linear/mxfp8/Mxfp8LinearKernel.py",
+          "sha256": "4b782c28be0a5b57a07e4c5d5eff021d8c3bdd26fd8fcff1def2aab72ae33ad3",
+          "same_bytes_as_export": true
+        },
+        {
+          "source": "gnmac-runtime/vllm/model_executor/kernels/linear/mxfp8/Mxfp8LinearKernel.py",
+          "sha256": "4b782c28be0a5b57a07e4c5d5eff021d8c3bdd26fd8fcff1def2aab72ae33ad3",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/quantization/utils/marlin_utils_fp8.py",
+      "current_sha256": "72c324a9de072e60c1f126ad3d5e7f077f6a8752590435e088634f798683d12a",
+      "upstream": [
+        {
+          "source": "ours-runtime/vllm/model_executor/layers/quantization/utils/marlin_utils_fp8.py",
+          "sha256": "72c324a9de072e60c1f126ad3d5e7f077f6a8752590435e088634f798683d12a",
+          "same_bytes_as_export": true
+        },
+        {
+          "source": "gnmac-runtime/vllm/model_executor/layers/quantization/utils/marlin_utils_fp8.py",
+          "sha256": "72c324a9de072e60c1f126ad3d5e7f077f6a8752590435e088634f798683d12a",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v4_1/ampere/ampere_sparse.py",
+      "current_sha256": "9cacea0fd01ed732361968bbb63c8169593e87ca2279171adc46664a42c5ccc0",
+      "upstream": [
+        {
+          "source": "ours-runtime/vllm/models/deepseek_v4_1/ampere/ampere_sparse.py",
+          "sha256": "40cc94ca34bf6e0cfdab780f8ecf67b330685542a75430209e5a9eb98874cc4f",
+          "same_bytes_as_export": false
+        },
+        {
+          "source": "gnmac-runtime/vllm/models/deepseek_v4_1/ampere/ampere_sparse.py",
+          "sha256": "aec8aae4ababc51100d7a247627aaddf9827278df1130d40628342f3c6c23d01",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v4_1/ampere/dsv41_wo_a.py",
+      "current_sha256": "d7cd6e9a66e4efb3425882fb04378a0647eb2fcb0d42ee829712989f563a22d3",
+      "upstream": [
+        {
+          "source": "gnmac-runtime/vllm/models/deepseek_v4_1/ampere/dsv41_wo_a.py",
+          "sha256": "d7cd6e9a66e4efb3425882fb04378a0647eb2fcb0d42ee829712989f563a22d3",
+          "same_bytes_as_export": true
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v4_1/nvidia/model.py",
+      "current_sha256": "214aeb0690e2a7e2a6068ed84ee193b7f6b19d3b51af712906e145b62fcb7049",
+      "upstream": [
+        {
+          "source": "ours-runtime/vllm/models/deepseek_v4_1/nvidia/model.py",
+          "sha256": "214aeb0690e2a7e2a6068ed84ee193b7f6b19d3b51af712906e145b62fcb7049",
+          "same_bytes_as_export": true
+        },
+        {
+          "source": "gnmac-runtime/vllm/models/deepseek_v4_1/nvidia/model.py",
+          "sha256": "b316e56439973cc3067716e1b32279fbb3be3516a4c84c1a1e9ca90ea23fb411",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/vllm/v1/attention/ops/rocm_aiter_mla_sparse.py",
+      "current_sha256": "a36c0e13cf63a77c804a5d5d60ec2f6d3e62bec51de3afac4f28619f91f5f8fc",
+      "upstream": [
+        {
+          "source": "ours-runtime/vllm/v1/attention/ops/rocm_aiter_mla_sparse.py",
+          "sha256": "a36c0e13cf63a77c804a5d5d60ec2f6d3e62bec51de3afac4f28619f91f5f8fc",
+          "same_bytes_as_export": true
+        },
+        {
+          "source": "gnmac-runtime/vllm/v1/attention/ops/rocm_aiter_mla_sparse.py",
+          "sha256": "e13162922b3273514fa49567368871fbc9f96cc5388d5849c5d7538ef22c56f8",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/vllm/v1/core/sched/scheduler.py",
+      "current_sha256": "bb38714265c9ffe5a849cd270d66fb9ab64735ef896b33a4be4944cdb34e1d4e",
+      "upstream": [
+        {
+          "source": "ours-runtime/vllm/v1/core/sched/scheduler.py",
+          "sha256": "d06a6f6074169960704117c0510aff9b636c586248be39fbb6d382e5995c96da",
+          "same_bytes_as_export": false
+        },
+        {
+          "source": "gnmac-runtime/vllm/v1/core/sched/scheduler.py",
+          "sha256": "65bf93b2c75ef3bc39e526367af220e46a6c963bb6153fea2b494478eeb3e70d",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/vllm/v1/sample/rejection_sampler.py",
+      "current_sha256": "368168dcdec15de3b6ccff114d6f24794e32876acc67a7066ade49a5204ad6f2",
+      "upstream": [
+        {
+          "source": "ours-runtime/vllm/v1/sample/rejection_sampler.py",
+          "sha256": "4bb87d7984d967be9c7e5b6a6b489c02571ef2f2913211cb3f1eea74b2e1f32f",
+          "same_bytes_as_export": false
+        },
+        {
+          "source": "gnmac-runtime/vllm/v1/sample/rejection_sampler.py",
+          "sha256": "1b6227080f106c7241d104cd941576d1cc70dd152162bbd1bfa8e0620cc35dd0",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_model_runner.py",
+      "current_sha256": "5a3c592e37b04f30913b9d95cfcfe7e6c227b592cab9f046a467af013a8770dc",
+      "upstream": [
+        {
+          "source": "ours-runtime/vllm/v1/worker/gpu_model_runner.py",
+          "sha256": "7e1228444dd3da44d62df32aa24fa57ef0aca99b00f48b3c5c2df3f9dbef1eb7",
+          "same_bytes_as_export": false
+        },
+        {
+          "source": "gnmac-runtime/vllm/v1/worker/gpu_model_runner.py",
+          "sha256": "3a91a5ffc4613cd0551a9a0e1370c113cbefcd49a7e14c4874ec57f159110e43",
+          "same_bytes_as_export": false
+        }
+      ]
+    },
+    {
+      "exported_path": "source/package/overlay/usr/local/lib/python3.12/dist-packages/vllm_exl3/exl3.py",
+      "current_sha256": "be41583daa448d6148c1711e52cc24992cfaf5420369f22ba45e43378ff57433",
+      "upstream": [
+        {
+          "source": "ours-runtime/vllm_exl3/exl3.py",
+          "sha256": "ed851d12937c0d2ffae1d0ae169d79d3411a60455f9e42d52116bcce29cc2d65",
+          "same_bytes_as_export": false
+        },
+        {
+          "source": "gnmac-runtime/vllm_exl3/exl3.py",
+          "sha256": "2e1971a4e121def838c544721d68d6280b1ac9bf814c3e602c47349b3e6e5bc6",
+          "same_bytes_as_export": false
+        }
+      ]
+    }
+  ]
+}

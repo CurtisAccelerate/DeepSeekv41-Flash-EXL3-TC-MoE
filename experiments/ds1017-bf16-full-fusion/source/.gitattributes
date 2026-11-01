@@ -1,0 +1,2 @@
+# Preserve exact tested bytes, including historical CRLF/EOF layout.
+* -text whitespace=cr-at-eol,-blank-at-eof
