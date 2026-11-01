@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "public_export_tar_sha256": "bf2a3904f6e6fd46d482f01afc08e4964046972537e9b19bddc2bb47c934c399",
+  "image": "sha256:db41e3e783756467713e317b9d5aee224a4ca64fad9553666f2435bdf001d30d",
+  "tests": {
+    "baseline": 53,
+    "prefill": 13,
+    "actual-api": 6,
+    "combine": 6,
+    "dense": 8,
+    "ragged": 10
+  },
+  "cuda_initialized": false,
+  "network": "none",
+  "runtime": "runc",
+  "native_host_queries": 12,
+  "live_owner_restarted": false,
+  "live_gpu_work_dispatched": false
+}

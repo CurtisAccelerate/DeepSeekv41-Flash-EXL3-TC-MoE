@@ -13,6 +13,38 @@ Serving recipe for DeepSeek V4.1 Flash, EXL3, tensor parallel 4, on 4× CMP
 Broadwell host, PCIe Gen2 x16, no NVLink. Fastest build measured for this
 mode: these weights, four of these cards, this host.
 
+## BF16 cache and full prefill fusion — November 1, 2026
+
+The measured [experimental source and qualification](experiments/ds1017-bf16-full-fusion/README.md)
+retain our optimized A/B/C decode stack, integrate selected GNmac paths with
+explicit attribution, and fuse integer index preparation across all 40 target
+layers. With C decode and BF16 KV fixed, matched 128K request wall fell
+**91.585 → 87.615 seconds** beyond the MoE-only prefill baseline. No new floating
+attention or dense backend is required. This is opt-in; existing launch defaults
+are unchanged. See the linked source for the small likelihood screen, cold
+latency exceptions and the untested adaptive-drafter ablation.
+
+### What changed in this publication
+
+The approximately 62,000 added lines are a complete tested source export,
+including retained vLLM/EXL3 code, native dependencies, tests and reference
+copies. They are not 62,000 lines of new kernel implementation. The runtime
+[change map](experiments/ds1017-bf16-full-fusion/REVIEW-MAP.md) separates
+73 retained files, five integration edits and 22 new runtime files.
+
+The new work completes integer prefill fusion from 20 to all 40 target layers,
+adds guarded selection and all-rank correctness qualification, and preserves
+our existing decode optimizations. Selected GNmac short-row FP8 target paths,
+FP8 draft head and fused Markov selection are credited in the
+[component notices](experiments/ds1017-bf16-full-fusion/NOTICE.md).
+
+The common measured choice is BF16 KV, full integer fusion and Marlin prefill.
+A leads long-history/critical likelihood; C is the demonstrated A/C speed
+option. The [complete benchmark and perplexity report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-01/README.md)
+includes previous baselines, uncertainty and retained latency regressions.
+The cleaned exported package passed 96 exact-image CPU checks without skips;
+the linked qualification records the earlier all-rank GPU and engine checks.
+
 ## Expert gates — October 28, 2026
 
 A rebuilt gate, up, and down kernel for 2–6 user decode on the 1017 serve.
