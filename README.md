@@ -16,13 +16,35 @@ mode: these weights, four of these cards, this host.
 ## BF16 cache and full prefill fusion — November 1, 2026
 
 The measured [experimental source and qualification](experiments/ds1017-bf16-full-fusion/README.md)
-retain our optimized A/B/C decode stack, integrate selected GNmac paths with
+retain our optimized expert, attention and communication paths, integrate
+selected GNmac target/drafter kernels with
 explicit attribution, and fuse integer index preparation across all 40 target
-layers. With C decode and BF16 KV fixed, matched 128K request wall fell
+layers. Holding the selected target paths and BF16 KV fixed, matched 128K
+request wall fell
 **91.585 → 87.615 seconds** beyond the MoE-only prefill baseline. No new floating
 attention or dense backend is required. This is opt-in; existing launch defaults
 are unchanged. See the linked source for the small likelihood screen, cold
 latency exceptions and the untested adaptive-drafter ablation.
+
+### Morrow benchmark headline
+
+| Users | Prompt | Original decode tok/s | Updated decode tok/s | Decode change | Request wall reduction |
+| ---: | --- | ---: | ---: | ---: | ---: |
+| 1 | Count | 221.93 | 271.77 | +22.46% | +15.39% |
+| 1 | Code | 196.99 | 245.96 | +24.86% | +17.84% |
+| 1 | Prose | 116.68 | 149.54 | +28.17% | +20.44% |
+| 8 | Count | 88.10 | 81.12 | -7.92% | -40.35% |
+| 8 | Code | 76.90 | 81.53 | +6.02% | +1.60% |
+| 8 | Prose | 39.10 | 43.89 | +12.24% | +11.74% |
+
+Original is our optimized target/decode stack; updated adds the selected
+GNmac target/drafter paths while retaining eligible existing optimizations.
+Both use BF16 KV, temperature 0 and 140 W. These are per-user streaming rates
+and full-batch wall reductions from **one measured batch per cell at users
+one/eight**, not a fresh full 1–8 sweep or the isolated gain from prefill fusion.
+The eight-user counting regression is retained. See the
+[full Morrow timing/protocol table](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-01/README.md#morrow-benchmark-headline)
+for exact wall/TTFT and prior baselines.
 
 ### What changed in this publication
 
@@ -39,8 +61,8 @@ FP8 draft head and fused Markov selection are credited in the
 [component notices](experiments/ds1017-bf16-full-fusion/NOTICE.md).
 
 The common measured choice is BF16 KV, full integer fusion and Marlin prefill.
-A leads long-history/critical likelihood; C is the demonstrated A/C speed
-option. The [complete benchmark and perplexity report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-01/README.md)
+The original target paths lead long-history/critical likelihood; the
+target-plus-drafter update is the demonstrated complete-stack speed option. The [complete benchmark and perplexity report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-01/README.md)
 includes previous baselines, uncertainty and retained latency regressions.
 The cleaned exported package passed 96 exact-image CPU checks without skips;
 the linked qualification records the earlier all-rank GPU and engine checks.
