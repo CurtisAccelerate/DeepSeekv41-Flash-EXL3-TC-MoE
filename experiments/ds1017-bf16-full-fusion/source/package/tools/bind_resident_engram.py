@@ -13,7 +13,7 @@ def repair(root):
     shutil.copyfile('/mnt/nvme-new/w14-single-load-20261022/engram/previous-manifest.json',prior)
     s['mounts'].append(dict(Type='bind',Source=str(prior),Target='/w9/engram-prior-manifest.json',ReadOnly=True))
     s['env']['W9_ENGRAM_BACKING']='/engram-resident/generation-abc-checkpoint-slices-20261101'
-    cmd=['docker','-H','unix:///run/w14-dsv41/docker.sock','run','--rm','--network=none','--entrypoint','python3']
+    cmd=['docker','-H','unix:///run/dsv41-private/docker.sock','run','--rm','--network=none','--entrypoint','python3']
     for k,v in s['env'].items():
         if k not in ('CUDA_VISIBLE_DEVICES','NVIDIA_VISIBLE_DEVICES'):cmd+=['--env',k+'='+v]
     cmd+=['--env','CUDA_VISIBLE_DEVICES=','--env','NVIDIA_VISIBLE_DEVICES=void']

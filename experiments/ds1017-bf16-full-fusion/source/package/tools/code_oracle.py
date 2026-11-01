@@ -22,7 +22,7 @@ print(json.dumps({'pass_screen':True,'oracle':d['case']}))
 def check(case,code,root):
     if case not in ('moving_average','binary_search') or not isinstance(code,str):return dict(pass_screen=False,reason='missing code')
     image=json.loads((Path(root)/'launch.json').read_text())['image'];name='star-abc-oracle-'+uuid.uuid4().hex
-    prefix=['docker','-H','unix:///run/w14-dsv41/docker.sock']
+    prefix=['docker','-H','unix:///run/dsv41-private/docker.sock']
     cmd=prefix+['run','--rm','-i','--name',name,'--network','none','--read-only','--tmpfs','/tmp:rw,size=32m','--memory','512m','--cpus','1','--pids-limit','32','--cap-drop','ALL','--security-opt','no-new-privileges','--env','CUDA_VISIBLE_DEVICES=','--entrypoint','python3',image,'-I','-S','-c',DRIVER]
     try:
         p=subprocess.run(cmd,input=json.dumps(dict(case=case,code=code)),capture_output=True,text=True,timeout=15)

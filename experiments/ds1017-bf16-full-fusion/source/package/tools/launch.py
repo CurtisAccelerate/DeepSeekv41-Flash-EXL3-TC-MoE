@@ -1,7 +1,7 @@
 """Execute an already frozen dedicated test launch, only when the GPU owner has stopped."""
 import argparse,json,subprocess,socket
 from pathlib import Path
-SOCKET='unix:///run/w14-dsv41/docker.sock'
+SOCKET='unix:///run/dsv41-private/docker.sock'
 def run(*a,**kw):return subprocess.run(['docker','-H',SOCKET,*a],check=True,**kw)
 ap=argparse.ArgumentParser();ap.add_argument('spec',type=Path);ap.add_argument('--execute',action='store_true');a=ap.parse_args();s=json.loads(a.spec.read_text())
 if not a.execute:print(json.dumps(s,indent=2));raise SystemExit(0)

@@ -39,7 +39,7 @@ print('STAR_ABC_STAGED_CPU '+json.dumps(dict(preflight_passed=True,attention_imp
 def check(root):
     spec=root/'launch.json';s=json.loads(spec.read_text())
     if s.get('schema')!='star.abc.launch.v1' or s['name'] not in ('star-abc-test','star-abc-test-fp8','star-abc-test-bf16'):raise ValueError('Dedicated frozen launch required')
-    cmd=['docker','-H','unix:///run/w14-dsv41/docker.sock','run','--rm','--network','none','--env','CUDA_VISIBLE_DEVICES=','--entrypoint','python3']
+    cmd=['docker','-H','unix:///run/dsv41-private/docker.sock','run','--rm','--network','none','--env','CUDA_VISIBLE_DEVICES=','--entrypoint','python3']
     for cap in s['host_config'].get('CapAdd') or []:cmd+=['--cap-add',cap]
     for setting in s['host_config'].get('SecurityOpt') or []:cmd+=['--security-opt',setting]
     for k,v in s['env'].items():

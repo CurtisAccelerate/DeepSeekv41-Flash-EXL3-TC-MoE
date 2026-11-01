@@ -2,7 +2,7 @@
 from pathlib import Path
 import argparse,json,hashlib,subprocess,shutil,os
 
-SOCKET='unix:///run/w14-dsv41/docker.sock'
+SOCKET='unix:///run/dsv41-private/docker.sock'
 BASE='/mnt/nvme-new/w84-r2-image-20261026'
 def inspect(name):return json.loads(subprocess.check_output(['docker','-H',SOCKET,'inspect',name]))[0]
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()

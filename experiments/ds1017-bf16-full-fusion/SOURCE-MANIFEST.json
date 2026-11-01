@@ -1,6 +1,6 @@
 {
   "schema": "star.v6.public-source-export.v1",
-  "scope": "Exact tested runtime/native/test source bytes. Site-specific launch records, historical raw prompts/logs, cached binaries and stale stage documents excluded. Build requires the retained immutable base image; this is not a replacement public base image.",
+  "scope": "Tested runtime/native/test source bytes; six offline helpers have privacy-only endpoint/socket literal substitutions documented per file. Inference runtime bytes remain unchanged. Site-specific launch records, historical raw prompts/logs, cached binaries and stale staging documents excluded. Build requires the retained immutable base image; this is not a replacement public base image.",
   "tested_package_tree_sha256": "1a342d522f0aa2d7866291b47e53eec22c02fe3cd5dea6b0030b9c3cbedf064e",
   "tested_full_source_zip_sha256": "86d227270485e17bb75c515af6d87137c85fadb235d7c1fb58969542144eb96b",
   "files": [
@@ -997,20 +997,29 @@
     {
       "path": "source/package/tools/bind_resident_engram.py",
       "tested_package_path": "tools/bind_resident_engram.py",
-      "bytes": 3554,
-      "sha256": "26451dcca511f77213d77865c9148623d423fd32969dc2248d4a3fa7db712ebb"
+      "bytes": 3558,
+      "sha256": "dbab876f7e90fef1e7abba7ee1dca37d89ffcfecb3dd49c6c8086b601014f634",
+      "tested_sha256": "26451dcca511f77213d77865c9148623d423fd32969dc2248d4a3fa7db712ebb",
+      "tested_bytes": 3554,
+      "publication_change": "Privacy-only replacement of site endpoint/socket literals in offline helper; inference runtime unchanged."
     },
     {
       "path": "source/package/tools/check_staged.py",
       "tested_package_path": "tools/check_staged.py",
-      "bytes": 4602,
-      "sha256": "b21c11ca1855492aa7cb07680e6a23945e36f1393df248033646b32d65c35889"
+      "bytes": 4606,
+      "sha256": "81c0333f7a8134bef282cd8c0dbadedc8da4c69ad962f3756a2a50edb34b63ad",
+      "tested_sha256": "b21c11ca1855492aa7cb07680e6a23945e36f1393df248033646b32d65c35889",
+      "tested_bytes": 4602,
+      "publication_change": "Privacy-only replacement of site endpoint/socket literals in offline helper; inference runtime unchanged."
     },
     {
       "path": "source/package/tools/code_oracle.py",
       "tested_package_path": "tools/code_oracle.py",
-      "bytes": 2097,
-      "sha256": "5eff9d4a0f81280d628dcbbbf77ae8acee3138d6f69639ae9556e6bc6a10efe8"
+      "bytes": 2101,
+      "sha256": "c71e1a792b76a435f7114f461265b2e124b3f8c0912666bd64cad79eefc0dc36",
+      "tested_sha256": "5eff9d4a0f81280d628dcbbbf77ae8acee3138d6f69639ae9556e6bc6a10efe8",
+      "tested_bytes": 2097,
+      "publication_change": "Privacy-only replacement of site endpoint/socket literals in offline helper; inference runtime unchanged."
     },
     {
       "path": "source/package/tools/compare_kv_boots.py",
@@ -1057,8 +1066,11 @@
     {
       "path": "source/package/tools/launch.py",
       "tested_package_path": "tools/launch.py",
-      "bytes": 2111,
-      "sha256": "2bdacee7152c2d5629ecd98505af4282f56de5d62faad1e523ca9bef947693bb"
+      "bytes": 2115,
+      "sha256": "d660c536d7545650da227a1dd92645cde18d53f91c2002eaec94c35fcef30353",
+      "tested_sha256": "2bdacee7152c2d5629ecd98505af4282f56de5d62faad1e523ca9bef947693bb",
+      "tested_bytes": 2111,
+      "publication_change": "Privacy-only replacement of site endpoint/socket literals in offline helper; inference runtime unchanged."
     },
     {
       "path": "source/package/tools/make_costs.py",
@@ -1117,8 +1129,11 @@
     {
       "path": "source/package/tools/prepare_launch.py",
       "tested_package_path": "tools/prepare_launch.py",
-      "bytes": 9172,
-      "sha256": "e3319ac0cba463d05bf20ce2f63c564d0070f4e0002e8b4d70674c8c0a6f4125"
+      "bytes": 9176,
+      "sha256": "523ee0ccc1e6eeb6d610bac745f61772783a7579efe75a177af43b82222538dd",
+      "tested_sha256": "e3319ac0cba463d05bf20ce2f63c564d0070f4e0002e8b4d70674c8c0a6f4125",
+      "tested_bytes": 9172,
+      "publication_change": "Privacy-only replacement of site endpoint/socket literals in offline helper; inference runtime unchanged."
     },
     {
       "path": "source/package/tools/run_capacity.py",
@@ -1147,8 +1162,11 @@
     {
       "path": "source/package/tools/stream_wall_probe.py",
       "tested_package_path": "tools/stream_wall_probe.py",
-      "bytes": 7898,
-      "sha256": "f21a8724d18c83f2c64429d9962a6990323c5bcf0dede8f25c0448631e2168f2"
+      "bytes": 7894,
+      "sha256": "eb892150a04122526c1474f46a4fd32ba5c1c7b500bd33029b93fdd326403f52",
+      "tested_sha256": "f21a8724d18c83f2c64429d9962a6990323c5bcf0dede8f25c0448631e2168f2",
+      "tested_bytes": 7898,
+      "publication_change": "Privacy-only replacement of site endpoint/socket literals in offline helper; inference runtime unchanged."
     },
     {
       "path": "source/package/tools/system_snapshot.py",

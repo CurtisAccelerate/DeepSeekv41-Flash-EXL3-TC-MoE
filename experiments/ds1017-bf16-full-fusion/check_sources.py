@@ -1,4 +1,4 @@
-"""Verify byte-for-byte correspondence of the cleaned source export."""
+"""Verify published source bytes and parse Python; privacy-only helper edits are documented."""
 from pathlib import Path
 import ast,hashlib,json
 root=Path(__file__).resolve().parent

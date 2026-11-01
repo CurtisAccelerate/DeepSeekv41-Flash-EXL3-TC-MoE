@@ -1,7 +1,7 @@
 """Record API wall time and actual delivery gaps without changing request settings.
 
 Example:
-  python stream_wall_probe.py --url http://192.168.1.252:8095/v1/chat/completions --request request.json --out relay.json
+  python stream_wall_probe.py --url http://127.0.0.1:8095/v1/chat/completions --request request.json --out relay.json
 
 The request JSON must explicitly contain stream=true. Full response events are
 saved; credentials are read only from an explicitly named --key-env variable.

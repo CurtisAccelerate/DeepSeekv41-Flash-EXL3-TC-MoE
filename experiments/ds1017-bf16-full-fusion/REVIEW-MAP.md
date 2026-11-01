@@ -21,11 +21,13 @@ prefill schedule adapted from Morrowmake. Optional dense variants and their
 tests are retained but not promoted as accuracy-preserving speed winners.
 
 `CHANGE-MAP.json` classifies overlay files against the retained base's source
-manifest. `SOURCE-MANIFEST.json` records exact tested bytes for every exported
+manifest. `SOURCE-MANIFEST.json` records tested and published hashes for every exported
 file, including native/tests/tools. Existing A/B/C/GNmac/vLLM dependencies are
 included so the integration can be inspected without an unavailable running
 machine; inspect their lineage in `UPSTREAM-LINEAGE.json` and `NOTICE.md`.
 
-No native/model source was reformatted for publication. Source attributes
+Six offline helper files have privacy-only endpoint/socket substitutions,
+recorded alongside original hashes in `SOURCE-MANIFEST.json`. No inference
+runtime or native/model source was changed or reformatted for publication. Source attributes
 preserve its original line endings and historical EOF layout so the hashes
 continue to match; prose and metadata are newly written for this update.

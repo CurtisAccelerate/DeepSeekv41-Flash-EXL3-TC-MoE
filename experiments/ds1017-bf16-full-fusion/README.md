@@ -1,7 +1,7 @@
 # DS1017: BF16 cache, qualified A/B/C decode and full prefill fusion
 
 **Measured experimental source export, November 1, 2026. Defaults remain off.**
-This directory contains the exact tested runtime, native source and qualification
+This directory contains the tested runtime, native source and qualification
 tests from the V6 build, with site-specific launch records, historical raw logs
 and stale staging documents removed. It does not change the repository's normal
 launch or provide a portable replacement base image.
@@ -57,7 +57,10 @@ retained vLLM/A/B/C dependencies. `CHANGE-MAP.json` records that classification.
 
 ## Source and build boundaries
 
-`source/package/` preserves every exported file byte for byte. Check it with:
+`source/package/` preserves inference runtime/native source byte for byte. Six
+offline helpers have privacy-only endpoint/socket substitutions, with original
+and published hashes recorded in `SOURCE-MANIFEST.json`. See
+[publication privacy cleanup](PUBLICATION-PRIVACY.md). Check the published bytes with:
 
 ```bash
 python experiments/ds1017-bf16-full-fusion/check_sources.py

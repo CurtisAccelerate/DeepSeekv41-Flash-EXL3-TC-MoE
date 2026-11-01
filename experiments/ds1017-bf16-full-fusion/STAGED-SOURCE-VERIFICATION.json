@@ -1,6 +1,15 @@
 {
   "passed": true,
   "staged_source_files": 192,
-  "all_staged_source_bytes_match_tested_export": true,
+  "all_staged_source_bytes_match_published_manifest": true,
+  "inference_runtime_bytes_match_tested_export": true,
+  "privacy_edited_offline_helpers": [
+    "source/package/tools/bind_resident_engram.py",
+    "source/package/tools/check_staged.py",
+    "source/package/tools/code_oracle.py",
+    "source/package/tools/launch.py",
+    "source/package/tools/prepare_launch.py",
+    "source/package/tools/stream_wall_probe.py"
+  ],
   "line_endings_preserved": true
 }
