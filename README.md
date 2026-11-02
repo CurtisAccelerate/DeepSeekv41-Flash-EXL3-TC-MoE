@@ -1,4 +1,4 @@
-# DeepSeek V4.1 Flash â€” tensor-core EXL3 MoE on CMP 170HX
+# DeepSeek V4.1 Flash — tensor-core EXL3 MoE on CMP 170HX
 
 [CurtisAccelerate](https://github.com/CurtisAccelerate).
 
@@ -8,39 +8,43 @@ integration, then developed the six-row transpose/native-mixed optimizations,
 Engram retention/reattachment and resident A/B workflow. Upstream kernel authors
 remain credited by component in the [contribution breakdown](experiments/ds1017-native-mixed-and-split/PRIOR-WORK.md#deepseek-build-expert-kernels-and-loading-separate-contributions).
 
-Serving recipe for DeepSeek V4.1 Flash, EXL3, tensor parallel 4, on 4Ã— CMP
-170HX (sm_80, 140 W, HBM locked at 1728 MHz) in a 2Ã— Xeon E5-2689 v4
+Serving recipe for DeepSeek V4.1 Flash, EXL3, tensor parallel 4, on 4× CMP
+170HX (sm_80, 140 W, HBM locked at 1728 MHz) in a 2× Xeon E5-2689 v4
 Broadwell host, PCIe Gen2 x16, no NVLink. Measurements apply to these weights, four cards and this host.
 
-## Balanced BF16 recipe â€” November 2, 2026
+## Tentative speed and quality leaders - November 2, 2026
 
-We kept our specialized expert shapes, split attention and communication paths, integrated selected GNmac dense/expert and fast draft-head/sampler paths, and retained BF16 KV and output projection with full integer prefill fusion and Marlin prefill. The selected recipe uses fixed-five verification and keeps the existing serving proposal split; adaptive width, confidence gating and the new greedy-proposal override remain optional experiments.
+Our specialized expert, attention and communication kernels remain, with selected GNmac integration. **No overall winner is established: choose speed, likelihood or the BF16-projection alternative.**
 
-### Morrow headline: per-user streaming and full request wall
+### Tentative speed winner
 
-| Users | Prompt | Original tok/s | Balanced tok/s | Original wall s | Balanced wall s | Wall cut | Original TTFT s | Balanced TTFT s |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | count | 223.15 | 262.38 | 2.1134 | 1.7611 | +16.67% | 0.3247 | 0.2393 |
-| 1 | code | 200.61 | 238.05 | 2.2958 | 1.8899 | +17.68% | 0.3056 | 0.2123 |
-| 1 | prose | 115.28 | 135.18 | 3.7765 | 3.1943 | +15.42% | 0.3153 | 0.2348 |
-| 8 | count | 87.48 | 97.35 | 5.2888 | 4.5958 | +13.10% | 0.7691 | 0.5103 |
-| 8 | code | 74.72 | 84.70 | 6.3977 | 5.4223 | +15.25% | 0.8433 | 0.5214 |
-| 8 | prose | 39.49 | 45.26 | 11.2018 | 9.5752 | +14.52% | 0.7904 | 0.5118 |
+| Configuration | Count tok/s | Code tok/s | Prose tok/s | Prose full wall s |
+| --- | --- | --- | --- | --- |
+| Tentative speed leader: earlier FP8 output projection | 277.97 | 248.87 | 143.06 | 3.0519 |
+| BF16 output-projection option: latest confirmation | 262.38 | 238.05 | 135.18 | 3.1943 |
+| Tentative quality leader: original target, latest confirmation | 223.15 | 200.61 | 115.28 | 3.7765 |
 
-Fresh same-boot BF16-cache controls,972 measured requests plus324 separately retained first-use requests, users1..8, three batches/cell. Original controls bracket the balanced pass. One regression remains: three-user code wall is4.60% slower. All eligible graph shapes were observed on all four ranks. Rates exclude TTFT; wall includes it.
+One-user Morrow, 400 tokens at 140 W; decode excludes TTFT and prose wall includes it. Both integration options use BF16 KV. The 143.06 result is a three-batch median from an earlier boot; the 135.18 result is the latest confirmation. This is not a matched projection-only comparison. A separate 149.54 single-pass observation is not used as the repeated headline.
 
-Fresh128K prefill fell95.380â†’87.480s versus original prefill. The earlier isolated integer-fusion gain was91.585â†’87.615s beyond the MoE-only baseline. Historical GNmac was86.333s with FP8KV on another boot; no matched standalone victory or20â€“30% lead is claimed.
+### Tentative quality winner: latest matched fixture
 
-The original ranks numerically best on the fresh small quality fixture: PPL1.166442 vs balanced1.168604. The difference is smaller than repeat variation, so this is a speed/quality tradeoff, not a demonstrated accuracy gain or equivalence. All48 correct/incorrect likelihood preferences passed. Seeded-output variation, a separator-token change and multiuser delivery stalls remain documented.
+| Latest same-boot quality fixture | Overall PPL | Short PPL | Long PPL | Critical-token NLL |
+| --- | --- | --- | --- | --- |
+| Tentative quality leader: original target | 1.166442374 | 1.169831946 | 1.163062623 | 0.084313206 |
+| BF16 output-projection option | 1.168603909 | 1.171285248 | 1.165928709 | 0.087338365 |
 
-The [complete benchmark, perplexity, drafting and attribution report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md) contains the full1..8 table, optional-proposal SPARK results, prefill/TTFT/wall data and retained regressions. Source updates modify the existing export in place rather than adding another complete source copy. The [selected private recipe and client](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-EXL3-TC-MoE/tree/main/experiments/ds1017-bf16-full-fusion/defaults) use the actual qualified private protocol; ordinary serving/Hermes has not been repointed.
+Lower PPL/NLL is better. The original ranks numerically best in the latest 96-request synthetic fixture, but the difference is smaller than repeat variation; no general accuracy win or equivalence is established. An earlier target-only study favored BF16 projection (PPL 1.165453 vs 1.170190 for FP8 projection), but those are not quality scores for the complete 143/135 tok/s recipes.
 
-## Expert gates â€” October 28, 2026
+The packaged 135 tok/s option is a precision-conservative alternative, not a proven quality winner or blanket recommendation. Published snapshots identify that option; users decide their preferred tradeoff.
 
-A rebuilt gate, up, and down kernel for 2â€“6 user decode on the 1017 serve.
+[Full November 2 report, all-user timing, perplexity, caveats and attribution](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md).
+
+## Expert gates — October 28, 2026
+
+A rebuilt gate, up, and down kernel for 2–6 user decode on the 1017 serve.
 It is bit-exact with the kernel it replaces. Morrow decode at 140 W is ahead
-by about 6â€“15% at those user counts. The Spark suite aggregate is ahead
-by about 11â€“26% at the same counts. One user and 7â€“8 users are unchanged.
+by about 6–15% at those user counts. The Spark suite aggregate is ahead
+by about 11–26% at the same counts. One user and 7–8 users are unchanged.
 [October 28 tables](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-10-28/README.md).
 The source is [experiments/ds1017-decode-gates](experiments/ds1017-decode-gates/README.md).
 Cloning this tree does not load it.
@@ -53,7 +57,7 @@ is still not a pullable image, are in
 [SERVING-2026-10-26.md](experiments/ds1017-native-mixed-and-split/SERVING-2026-10-26.md).
 The 2-8 user source and its flags are in [experiments/ds1017-r2-b2-b8](experiments/ds1017-r2-b2-b8/README.md). DSV41_R2 defaults off.
 
-## DS1017 update â€” October 25, 2026
+## DS1017 update — October 25, 2026
 
 [Native mixed experts and experimental split attention / captured drafter](experiments/ds1017-native-mixed-and-split/)
 now have canonical source, explicit default-off component flags, startup
@@ -74,22 +78,22 @@ still warranted. The bundle requires serving-specific startup/capture
 integration and does not enable the historical launch scripts by itself.
 See the [1017 performance and quality report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/tree/main/benchmarks/2026-10-25).
 
-## Kernel and resident-graph update â€” October 22, 2026
+## Kernel and resident-graph update — October 22, 2026
 
 **Small measured decode gains, plus kernel A/B testing without reloading weights.**
 On DeepSeek V4.1 Flash 1017, controlled counting confirmed **+2.86%** from the
 EXL transpose change and **+1.74% further** from six-row host all-reduce tuning.
-A separate eight-pair confirmation measured **184.21 â†’ 188.13 tok/s (+2.21%)**
+A separate eight-pair confirmation measured **184.21 → 188.13 tok/s (+2.21%)**
 for the host tuning. These are counting-workload gains, not general agent speedups.
 
 - [New six-row host all-reduce source patch](experiments/host-allreduce-six-row/):
   existing two-shot kernel, one block, 512 threads, exact SM80/TP4/BF16 shape guard.
 - [Hybrid P2P on Broadwell](docs/hybrid-p2p-broadwell.md): local GPU pairs plus
-  host communication across sockets; **572.60 â†’ 586.31 C8 counting tok/s (+2.43%)**.
+  host communication across sockets; **572.60 → 586.31 C8 counting tok/s (+2.43%)**.
   Only the 48-row path won qualification; large-prefill paths remain unchanged.
 - [Online CUDA graph optimization](docs/resident-cuda-graph-optimization.md):
   compatible kernel registration across four ranks in about **0.30 s**, with
-  **600 node updates/rank in 2.7â€“3.9 ms**, no model reload or graph recapture.
+  **600 node updates/rank in 2.7–3.9 ms**, no model reload or graph recapture.
 
 The [1017 benchmark report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-10-22/README.md)
 includes all limitations: the full eight-task C8 aggregate was **271.57 tok/s**,
@@ -98,7 +102,7 @@ throughput improvement is claimed. Source experiments are opt-in; existing
 launch defaults are unchanged. The historical checkpoint results below retain
 their original scope.
 
-## Cooperative-decode experiment â€” October 21, 2026
+## Cooperative-decode experiment — October 21, 2026
 
 The [six-row ExLlamaV3 cooperative-decode experiment](experiments/exl3-cooperative-decode/)
 is maintained here with its measured source patch, CPU mapping check, source
@@ -107,7 +111,7 @@ SM80 K2/K3 path. This is a separate experiment from the `tc_moe` kernels below;
 the existing hook and launch scripts do not enable it.
 
 The model-specific [controlled sweep tables](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/e560d05caa54969b5fc664056202bea863ca9513/benchmarks/2026-10-21/kernel-sweeps.md)
-and [4Ã— CMP 170HX versus 4Ã— DGX Spark comparison](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/e560d05caa54969b5fc664056202bea863ca9513/benchmarks/2026-10-21/spark-comparison.md)
+and [4× CMP 170HX versus 4× DGX Spark comparison](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/e560d05caa54969b5fc664056202bea863ca9513/benchmarks/2026-10-21/spark-comparison.md)
 remain in the 1017 repository. The experiment measured modest decode gains;
 its source template still needs a guard matching the tested serving scope
 before general integration.
@@ -186,7 +190,7 @@ and NCCL.
 | Growing c1 TTFT, median | 10.15 s | 8.37 s | 17.5% lower |
 | TTFT at 2,080 tokens | 2.09 s | 1.78 s | |
 | TTFT at 255,424 tokens | 12.63 s | 10.90 s | |
-| KV pool | 672,372 | 616,916 | still 2.35Ã— at 262,144 |
+| KV pool | 672,372 | 616,916 | still 2.35× at 262,144 |
 
 Every one of the 30 growing-context turns was faster. No preemptions.
 Needles passed at 32,768, 131,072, and 261,568 tokens, depths 10 / 50 / 90
@@ -206,7 +210,7 @@ what the tensor-core dispatch was compared with:
 | KV pool | 687,201 | 616,916 |
 
 Structured single-stream is the same hash on all three stacks. The 8-user gain
-is the 43â€“64 row window. The time-to-first-token gain is the prefill kernel.
+is the 43–64 row window. The time-to-first-token gain is the prefill kernel.
 
 The port:
 
@@ -214,9 +218,9 @@ The port:
   codebook, K3 on every served layer. A K2 down-projection that spilled 8
   bytes at the 255-register cap was split into two passes. The served
   kernels spill zero registers.
-- Gate 0 on these weights. v2 loses to coop at 1â€“42 rows and beats the stock
-  path from 48 rows through prefill, so coop keeps 1â€“42, `moe_out_v2` is
-  only 43â€“64, and `moe_out_prefill` is 65â€“2048.
+- Gate 0 on these weights. v2 loses to coop at 1–42 rows and beats the stock
+  path from 48 rows through prefill, so coop keeps 1–42, `moe_out_v2` is
+  only 43–64, and `moe_out_prefill` is 65–2048.
 - One 540.4 MiB workspace per GPU, shared by every MoE layer, allocated when
   the first layer loads and before the KV cache is profiled. A buffer per
   layer does not fit beside this model on a 64 GB card.
@@ -234,7 +238,7 @@ checkpoint credit are in [NOTICE.md](NOTICE.md).
 ## DeepSeek V4.1 Flash 1017
 
 The measurements above are the previous checkpoint, Mia-AiLab EXL3 3.0 bpw.
-1017 is a different weight selection. Layers 0â€“39 routed experts are LibertAI
+1017 is a different weight selection. Layers 0–39 routed experts are LibertAI
 EXL3 2.9. Attention, shared experts, the head, the draft, and Engram stay the
 official FP8 checkpoint. These kernels and this launch still run the experts.
 They do not choose which file an attention weight comes from. Leave `head_bits`
@@ -248,9 +252,9 @@ are [DeepSeekv41-Flash-1017-EXL3-CMP170HX](https://github.com/CurtisAccelerate/D
 
 | Rows | Kernel |
 |---:|---|
-| 1â€“42 | coop, kept from the optimized stack (`tokens * topk <= 256` at top-6) |
-| 43â€“64 | `moe_out_v2` (`VLLM_EXL3_TC_MOE_V2=1`) |
-| 65â€“2048 | `moe_out_prefill` (`VLLM_EXL3_TC_MOE_PREFILL=1`) |
+| 1–42 | coop, kept from the optimized stack (`tokens * topk <= 256` at top-6) |
+| 43–64 | `moe_out_v2` (`VLLM_EXL3_TC_MOE_V2=1`) |
+| 65–2048 | `moe_out_prefill` (`VLLM_EXL3_TC_MOE_PREFILL=1`) |
 
 One FP32 workspace per GPU, shared by every MoE layer, sized for the larger of
 v2 at 64 rows and prefill at 2048 rows with intermediate 640. On this model
@@ -333,7 +337,7 @@ Set `GATE0_MODEL` to the checkpoint and `GATE0_PLUGIN` to the EXL3 plugin.
 
 ## Hardware for these numbers
 
-4Ã— CMP 170HX, sm_80, 140 W power cap, in a 2Ã— Xeon E5-2689 v4 (Broadwell)
+4× CMP 170HX, sm_80, 140 W power cap, in a 2× Xeon E5-2689 v4 (Broadwell)
 host, PCIe Gen2 x16, no NVLink. Peer access left off. HBM is locked at
 NDIV 64, **1728 MHz**. The memory clock `nvidia-smi` prints stays at the
 card-reported 1458 MHz and does not show that lock, including while a
@@ -343,7 +347,7 @@ Temperature 0, top_p 1, max tokens 400.
 
 ## Requirements
 
-4Ã— CMP 170HX, 64 GB each. This run fills about 62.5 GB of each card, so a 48 GB card does not fit. The checkpoint file is 674 GB on disk. It is read as needed and does not have to sit in RAM.
+4× CMP 170HX, 64 GB each. This run fills about 62.5 GB of each card, so a 48 GB card does not fit. The checkpoint file is 674 GB on disk. It is read as needed and does not have to sit in RAM.
 
 Of each card, about 56 GB is the model weights. The rest is the KV cache, which holds about 617,000 tokens, plus a small CUDA graph.
 
@@ -363,9 +367,9 @@ checkpoint.
 
 v2 is slower than coop at 6, 12, and 36 rows on both shapes, which is why
 those rows stay on coop. Correctness passed on layers 0, 10, 18, 22, 30, and
-39, both intermediates: FP64 mean error 0.64Ã— to 0.73Ã— the incumbent, max
-0.73Ã— to 1.00Ã—, clamp, three bitwise repeats, R=512 equal to R=2048, 36-row
-CUDA-graph replay, and ids of âˆ’1 writing zeros.
+39, both intermediates: FP64 mean error 0.64× to 0.73× the incumbent, max
+0.73× to 1.00×, clamp, three bitwise repeats, R=512 equal to R=2048, 36-row
+CUDA-graph replay, and ids of −1 writing zeros.
 
 ## Open items
 

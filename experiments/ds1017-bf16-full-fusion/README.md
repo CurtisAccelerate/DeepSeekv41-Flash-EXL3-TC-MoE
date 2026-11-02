@@ -1,8 +1,10 @@
-# Selected balanced BF16 integration
+# Published BF16-projection option and reader choice
 
-The November2 selected default recipe retains BF16KV/output projection, fixedfive, our specialized expert/attention/collective paths, full integer prefill fusion and Marlin prefill, with selected GNmac dense/expert and fast draft-head/sampler integration.
+The November 2 packaged BF16-projection option retains BF16KV/output projection, fixedfive, our specialized expert/attention/collective paths, full integer prefill fusion and Marlin prefill, with selected GNmac dense/expert and fast draft-head/sampler integration.
 
-[Current full report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md) · [Default recipe](defaults/DEFAULT-RECIPE.json) · [Supported private client](defaults/balanced_default_client.py) · [Attribution](NOTICE.md).
+The [November 2 headline comparison](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md) leads with the tentative speed winner (earlier FP8 projection, 143.06 prose tok/s), then the tentative quality winner in the latest fixture (original target, PPL 1.166442 versus 1.168604 for this option). The packaged option measured 135.18 prose tok/s in its latest confirmation. Users choose their tradeoff; archived default/snapshot names identify this packaged option, not proof of an overall winner.
+
+[Current full report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md) · [Packaged BF16 recipe](defaults/DEFAULT-RECIPE.json) · [Supported private client](defaults/balanced_default_client.py) · [Attribution](NOTICE.md).
 
 Use the client only against an already-qualified dedicated owner:
 
@@ -12,7 +14,7 @@ python defaults/balanced_default_client.py --root /path/to/qualified-stage --req
 
 The request file is one streaming API body or a list of one through eight bodies. The client selects the recipe, records actual wall/TTFT/gaps and restores the reference/private paused state on exit. `--greedy-proposals` is explicit opt-in with the mixed speed and seeded-repeat limitations in the report. This is not a general public serving launcher or Hermes promotion.
 
-The original target is the current small-fixture numerical accuracy reference. The balanced recipe is selected for tangible wall-time gains with retained precision safeguards; general accuracy gain/equivalence is not established. Narrow/adaptive/gated source is retained for reproducibility, not selected or silently admitted for sampled workloads.
+The original target is the current small-fixture numerical accuracy reference. The packaged BF16 recipe has tangible wall-time gains over the original and retains precision safeguards; general accuracy gain/equivalence is not established. It is not the demonstrated quality winner or a universal recommendation. Narrow/adaptive/gated source is retained for reproducibility, not selected or silently admitted for sampled workloads.
 
 Source updates are in place, with all inference/native bytes pinned to the measured image. Privacy-only offline-helper changes have both tested/published hashes in SOURCE-MANIFEST.json. Run `python check_sources.py`.
 
@@ -37,8 +39,8 @@ The validated cache type is **bfloat16**, not FP16 and not FP8.
 ## Measured result
 
 The matched C-fixed, BF16-cache prefill comparison improved wall time by
-**4.3â€“6.7% beyond our MoE-only prefill baseline** over 2Kâ€“128K. At 128K:
-**91.585 â†’ 87.615 seconds**. These are full request walls, not kernel timers.
+**4.3–6.7% beyond our MoE-only prefill baseline** over 2K–128K. At 128K:
+**91.585 → 87.615 seconds**. These are full request walls, not kernel timers.
 The previous partial fusion covered 20 ratio-1 layers. This path also covers
 18 ratio-2 and 2 sliding-window-only layers. It directly builds the same int32
 indices and row pointers, preserving invalid slots, order and bounds.
