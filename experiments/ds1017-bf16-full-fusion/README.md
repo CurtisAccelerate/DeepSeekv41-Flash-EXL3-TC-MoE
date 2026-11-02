@@ -1,8 +1,12 @@
 # Published BF16-projection option and reader choice
 
-The November 2 packaged BF16-projection option retains BF16KV/output projection, fixedfive, our specialized expert/attention/collective paths, full integer prefill fusion and Marlin prefill, with selected GNmac dense/expert and fast draft-head/sampler integration.
+We extended our optimized DeepSeek serving stack with prefill fusion across all 40 target layers, faster target execution and integrated draft sampling, while preserving our specialized expert shapes, split attention and communication paths. We compared FP8 and BF16 output projection with BF16 KV, measuring decode speed, full request wall time and perplexity. The packaged option uses BF16 output projection and fixed-five verification.
 
 The [November 2 headline comparison](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md) leads with the tentative speed winner (earlier FP8 projection, 143.06 prose tok/s), then the tentative quality winner in the latest fixture (original target, PPL 1.166442 versus 1.168604 for this option). The packaged option measured 135.18 prose tok/s in its latest confirmation. Users choose their tradeoff; archived default/snapshot names identify this packaged option, not proof of an overall winner.
+
+### Attribution - Special Thanks!
+
+Special thanks to [GNmac](https://github.com/GNmac-lab/deepseek-v41-flash-1017-cmp170hx) for sharing the short-row FP8 kernels, FP8 draft head, fused sampler, alternate expert recipe and adaptive-drafting work we adapted and tested. We integrated selected pieces into our existing optimized stack and tested the adaptive controller using locally measured costs. [Component attribution and source lineage](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-EXL3-TC-MoE/blob/main/experiments/ds1017-bf16-full-fusion/NOTICE.md) credit those contributions and the Morrowmake, ExLlamaV3 and vLLM foundations.
 
 [Current full report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md) · [Packaged BF16 recipe](defaults/DEFAULT-RECIPE.json) · [Supported private client](defaults/balanced_default_client.py) · [Attribution](NOTICE.md).
 

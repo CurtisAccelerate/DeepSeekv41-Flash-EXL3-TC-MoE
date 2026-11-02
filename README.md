@@ -14,7 +14,7 @@ Broadwell host, PCIe Gen2 x16, no NVLink. Measurements apply to these weights, f
 
 ## Tentative speed and quality leaders - November 2, 2026
 
-Our specialized expert, attention and communication kernels remain, with selected GNmac integration. **No overall winner is established: choose speed, likelihood or the BF16-projection alternative.**
+We extended our optimized DeepSeek serving stack with prefill fusion across all 40 target layers, faster target execution and integrated draft sampling, while preserving our specialized expert shapes, split attention and communication paths. We compared FP8 and BF16 output projection with BF16 KV, measuring decode speed, full request wall time and perplexity.
 
 ### Tentative speed winner
 
@@ -36,6 +36,10 @@ One-user Morrow, 400 tokens at 140 W; decode excludes TTFT and prose wall includ
 Lower PPL/NLL is better. The original ranks numerically best in the latest 96-request synthetic fixture, but the difference is smaller than repeat variation; no general accuracy win or equivalence is established. An earlier target-only study favored BF16 projection (PPL 1.165453 vs 1.170190 for FP8 projection), but those are not quality scores for the complete 143/135 tok/s recipes.
 
 The packaged 135 tok/s option is a precision-conservative alternative, not a proven quality winner or blanket recommendation. Published snapshots identify that option; users decide their preferred tradeoff.
+
+### Attribution - Special Thanks!
+
+Special thanks to [GNmac](https://github.com/GNmac-lab/deepseek-v41-flash-1017-cmp170hx) for sharing the short-row FP8 kernels, FP8 draft head, fused sampler, alternate expert recipe and adaptive-drafting work we adapted and tested. We integrated selected pieces into our existing optimized stack and tested the adaptive controller using locally measured costs. [Component attribution and source lineage](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-EXL3-TC-MoE/blob/main/experiments/ds1017-bf16-full-fusion/NOTICE.md) credit those contributions and the Morrowmake, ExLlamaV3 and vLLM foundations.
 
 [Full November 2 report, all-user timing, perplexity, caveats and attribution](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md).
 
