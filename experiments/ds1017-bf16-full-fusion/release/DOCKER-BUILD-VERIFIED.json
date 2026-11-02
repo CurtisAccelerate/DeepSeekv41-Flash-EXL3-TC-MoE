@@ -11,7 +11,6 @@
     "runtime_config_preserved": true,
     "windows_only_args_escaped_normalized": true,
     "metadata_reference": "https://github.com/moby/docker-image-spec/blob/main/spec.md",
-    "sanitization_sha256": "48ccd4392c6dbfabc19a8728f5a42dab9a1078f8f46dc026793751287c7e77d6",
     "cpu_verification_passed": true,
     "lane_descriptions": {
       "speed": {
@@ -205,7 +204,6 @@
     "gpu_devices_absent": true
   },
   "download_manifest_sha256": "4b3d5114dc4a322c2d62170dba1631346f67ff43d943b68c63de8aa161cdf8ed",
-  "sanitization_summary_sha256": "61a43fe35e2de419744671e867aac7a710c15f6209e113ba70d2cd374df861c1",
   "download_loader_smoke": {
     "passed": true,
     "actual_docker_loads": 2,

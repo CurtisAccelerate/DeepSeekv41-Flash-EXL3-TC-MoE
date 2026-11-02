@@ -7,7 +7,6 @@
   "runtime_config_preserved": true,
   "windows_only_args_escaped_normalized": true,
   "metadata_reference": "https://github.com/moby/docker-image-spec/blob/main/spec.md",
-  "sanitization_sha256": "48ccd4392c6dbfabc19a8728f5a42dab9a1078f8f46dc026793751287c7e77d6",
   "cpu_verification_passed": true,
   "lane_descriptions": {
     "speed": {
