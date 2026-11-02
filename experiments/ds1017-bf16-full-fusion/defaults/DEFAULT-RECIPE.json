@@ -1,36 +1,76 @@
 {
-  "schema": "star.default.recipe.v1",
-  "name": "balanced-bf16-fixed-five",
-  "status": "selected_after_final_evidence_review",
+  "schema": "star.default.recipe.v2",
+  "name": "speed-fp8-projection-fixed-five",
+  "status": "user_selected_speed_default",
+  "default_lane": "speed",
   "runtime_base_image": "sha256:7ecbcf725f31d1b5bc05fc6863a16a94ef9c1c6cf7441e0a5c257fcd430e4d94",
-  "kv_cache_dtype": "bfloat16",
-  "output_projection": "bfloat16",
-  "dense_short_rows": "selected FP8",
-  "expert_layout": "TP4 shards, retain our specialized paths for users2..6, selected hybrid paths1/7/8",
-  "prefill": "Marlin plus all40layer integer fusion",
-  "verification_width": 5,
-  "confidence_gate": false,
-  "adaptive_policy": false,
-  "proposal_policy": "existing-serving-split",
-  "private_profile": "GN-BALANCED-WIDE",
-  "private_prefill_profile": "MOE_RAGGED",
-  "users": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8
-  ],
+  "native_manifest_identity": "738ae435bf007ca27df22f43254c92903f4f9cb2ac3b6e67171a0f556be01877",
+  "lanes": {
+    "speed": {
+      "lane": "speed",
+      "kv_cache_dtype": "bfloat16",
+      "verification_width": 5,
+      "confidence_gate": false,
+      "adaptive_width": false,
+      "proposal_policy": "existing-serving-split",
+      "name": "Speed",
+      "profile": "GN-SPEED-WIDE",
+      "capture_scope": "draft-speed",
+      "family": [
+        true,
+        true,
+        "hybrid"
+      ],
+      "prefill": "MOE_RAGGED",
+      "output_projection": "fp8-short-rows",
+      "description": "Speed default: short-row FP8 dense/output projection, retained specialized experts, fast draft head/sampler, fixedfive and gateoff."
+    },
+    "bf16": {
+      "lane": "bf16",
+      "kv_cache_dtype": "bfloat16",
+      "verification_width": 5,
+      "confidence_gate": false,
+      "adaptive_width": false,
+      "proposal_policy": "existing-serving-split",
+      "name": "BF16 projection",
+      "profile": "GN-BALANCED-WIDE",
+      "capture_scope": "draft-balanced",
+      "family": [
+        true,
+        false,
+        "hybrid"
+      ],
+      "prefill": "MOE_RAGGED",
+      "output_projection": "bfloat16",
+      "description": "BF16 output projection with the retained fast dense/expert/draft paths. Precision-conservative option, not a proved accuracy winner."
+    },
+    "quality": {
+      "lane": "quality",
+      "kv_cache_dtype": "bfloat16",
+      "verification_width": 5,
+      "confidence_gate": false,
+      "adaptive_width": false,
+      "proposal_policy": "existing-serving-split",
+      "name": "Original quality reference",
+      "profile": "A",
+      "capture_scope": "draft-balanced",
+      "family": [
+        false,
+        false,
+        "ours"
+      ],
+      "prefill": "REFERENCE",
+      "output_projection": "bfloat16",
+      "description": "Original target/reference prefill. Numerical leader in latest small teacher fixture, not a general agent-quality guarantee."
+    }
+  },
   "gpu_power_w": 140,
   "capture_cap_bytes": 1207959552,
   "startup_free_floor_bytes": 1073741824,
-  "greedy_proposal_override": "Explicit opt-in only; sampled code regressed in fixed400 screen, seeded identity guard failed with variation also in flag-off controls.",
-  "admission": "private-only; requires qualified existing owner and explicit supported client; no ordinary production promotion or Hermes repointing",
-  "selection_reason": "Tangible matched wall gains with retained BF16KV/output projection and original specialized kernels. Original is numerically best on the fresh small quality fixture; differences are inconclusive relative to repeats. No general accuracy gain/equivalence or standalone GNmac lead established.",
-  "evidence_archive_sha256": "b726a8327304b182a9f6f9e4111c6d77f21b62aa8b5eee6ada87366d7210bc47",
-  "native_manifest_identity": "738ae435bf007ca27df22f43254c92903f4f9cb2ac3b6e67171a0f556be01877",
-  "selected_bank_identity": "c3fb3c600a8f6e8add3d5d33f580c70b4cae04d89e00ad7b0be0432dac7ac6f4"
+  "proposal_policy": "existing-serving-split",
+  "greedy_proposals": "Explicit opt-in only; not the default",
+  "historical_speed": "Earlier repeated full integration:277.97count/248.87code/143.06prose streamtok/s at1user/140W/BF16KV. Not a fresh measurement of this packaging.",
+  "qualification": "Unchanged runtime/native source. Image CPU/source/ABI and settings checks required; each new bank must pass retained all-rank GPU startup qualification. This new speed-bank cold load has not yet run.",
+  "projection_change": "Speed and BF16 projection capture different banks; cold load required. Quality reference is available inside either qualified bank.",
+  "admission": "Existing private protocol; no public/Hermes admission change"
 }

@@ -1,0 +1,104 @@
+{
+  "format": "docker-save-gzip-split-v1",
+  "image_id": "sha256:d8ede442bb7f9b44fa922ea2d4ef60d799d268c787513d1054fc092760238d37",
+  "tag": "ds1017:2026.11.02-speed-k5",
+  "archive_name": "ds1017-2026.11.02-speed-k5.docker.tar.gz",
+  "archive_bytes": 9453772915,
+  "archive_sha256": "3e94fe9ff7a6c98671342646e4ce10538e35cde2c8aa0df92588ac2bba8cab78",
+  "parts": [
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part000",
+      "bytes": 536870912,
+      "sha256": "732533cfc11551254c914acbfaf6bc0e927d63e53cef0439c4e52593e814bf31"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part001",
+      "bytes": 536870912,
+      "sha256": "97118300a70fc69e1f40c9806b557379a98d014dc9f74ffa0c4da9e1da411947"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part002",
+      "bytes": 536870912,
+      "sha256": "a58301292d35d54280333cadaf10964608332d75db8872b05c9a37b9e34c16f0"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part003",
+      "bytes": 536870912,
+      "sha256": "32eeaf9cfefeadbceabacc0799fd4997bf9046b59cc363c19a69bdf82ac4c7e4"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part004",
+      "bytes": 536870912,
+      "sha256": "ec7c42577ab9e92345d901bef37c8942495969554c4fccd44709dc8f3b536e6e"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part005",
+      "bytes": 536870912,
+      "sha256": "e74cc11ed63b9664c3e20ce506fad1014de20ee0a1d0cc849ced59276135cf92"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part006",
+      "bytes": 536870912,
+      "sha256": "c1488109c401ffc41a70a400af8fc432114577a0d68d34f4f2b510f5b6c9f1b0"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part007",
+      "bytes": 536870912,
+      "sha256": "a2ba124203583ff747325ba7a2e03ac099225c9ad42213ea1f4ab737b50f87f7"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part008",
+      "bytes": 536870912,
+      "sha256": "5cd66518685411895c096639374529f64616825cd81c73acc361f587655a7550"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part009",
+      "bytes": 536870912,
+      "sha256": "e5dc0dc746d45499df052864a4276cadd1535d62ac117ad43cfeff92327448b2"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part010",
+      "bytes": 536870912,
+      "sha256": "e1d71820463f88e6a71f82f816ae3a5baee53b836de250ab0becfc4f07dc7060"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part011",
+      "bytes": 536870912,
+      "sha256": "a244ae0088a5a4ae535055d9daf84f5004018abda8563a61e690016c3bf1bd4c"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part012",
+      "bytes": 536870912,
+      "sha256": "f79faffc01f9cbb2fce9b97e55d0485a27ceeb7b9e58d00e5f71b0f1d4b3f335"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part013",
+      "bytes": 536870912,
+      "sha256": "7001ef2fd7b6f1bdf58fac659ad96cbc55a165764e746aba6388a986f3fdf211"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part014",
+      "bytes": 536870912,
+      "sha256": "f4ab4e10e4ad6469ea91c8bb54df861cba045780794e8ede1987a1e7c1a48f45"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part015",
+      "bytes": 536870912,
+      "sha256": "72c49415308a4ac63cd7dc8275ba1ce444a967f716d6770156ed23e3c8b7e0d6"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part016",
+      "bytes": 536870912,
+      "sha256": "66a9281a51c59bbd3b54284ca261392f3ccbb79908929ecde5817a1c9fc404fb"
+    },
+    {
+      "name": "ds1017-2026.11.02-speed-k5.docker.tar.gz.part017",
+      "bytes": 326967411,
+      "sha256": "9a678e74b050a6b54eac9b0070e81092d3272c09cd0f56ed4a73c085f46790e1"
+    }
+  ],
+  "load": "Concatenate numbered parts in order, verify SHA256, then docker load --input archive.",
+  "weights_included": false,
+  "gpu_boot_tested": false,
+  "roundtrip_load_verified": true
+}

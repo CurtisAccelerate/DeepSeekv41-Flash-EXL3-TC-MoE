@@ -1,0 +1,221 @@
+{
+  "passed": true,
+  "tag": "ds1017:2026.11.02-speed-k5",
+  "image_id": "sha256:d8ede442bb7f9b44fa922ea2d4ef60d799d268c787513d1054fc092760238d37",
+  "public_image": {
+    "passed": true,
+    "image_id": "sha256:d8ede442bb7f9b44fa922ea2d4ef60d799d268c787513d1054fc092760238d37",
+    "tag": "ds1017:2026.11.02-speed-k5",
+    "source_layered_image": "sha256:533705b927514a2bf25052c5e66616432176ec8d7c8447757ce809bbc59771ed",
+    "flattened_layers": 1,
+    "runtime_config_preserved": true,
+    "windows_only_args_escaped_normalized": true,
+    "metadata_reference": "https://github.com/moby/docker-image-spec/blob/main/spec.md",
+    "sanitization_sha256": "48ccd4392c6dbfabc19a8728f5a42dab9a1078f8f46dc026793751287c7e77d6",
+    "cpu_verification_passed": true,
+    "lane_descriptions": {
+      "speed": {
+        "default_lane": "speed",
+        "selected": {
+          "lane": "speed",
+          "kv_cache_dtype": "bfloat16",
+          "verification_width": 5,
+          "confidence_gate": false,
+          "adaptive_width": false,
+          "proposal_policy": "existing-serving-split",
+          "name": "Speed",
+          "profile": "GN-SPEED-WIDE",
+          "capture_scope": "draft-speed",
+          "family": [
+            true,
+            true,
+            "hybrid"
+          ],
+          "prefill": "MOE_RAGGED",
+          "output_projection": "fp8-short-rows",
+          "description": "Speed default: short-row FP8 dense/output projection, retained specialized experts, fast draft head/sampler, fixedfive and gateoff."
+        },
+        "cold_load_for_projection_change": true,
+        "quality_available_in_either_bank": true,
+        "gpu_qualification": "Required at each cold load by the retained all-rank startup gates; no new measured speed is implied by packaging."
+      },
+      "bf16": {
+        "default_lane": "speed",
+        "selected": {
+          "lane": "bf16",
+          "kv_cache_dtype": "bfloat16",
+          "verification_width": 5,
+          "confidence_gate": false,
+          "adaptive_width": false,
+          "proposal_policy": "existing-serving-split",
+          "name": "BF16 projection",
+          "profile": "GN-BALANCED-WIDE",
+          "capture_scope": "draft-balanced",
+          "family": [
+            true,
+            false,
+            "hybrid"
+          ],
+          "prefill": "MOE_RAGGED",
+          "output_projection": "bfloat16",
+          "description": "BF16 output projection with the retained fast dense/expert/draft paths. Precision-conservative option, not a proved accuracy winner."
+        },
+        "cold_load_for_projection_change": true,
+        "quality_available_in_either_bank": true,
+        "gpu_qualification": "Required at each cold load by the retained all-rank startup gates; no new measured speed is implied by packaging."
+      },
+      "quality": {
+        "default_lane": "speed",
+        "selected": {
+          "lane": "quality",
+          "kv_cache_dtype": "bfloat16",
+          "verification_width": 5,
+          "confidence_gate": false,
+          "adaptive_width": false,
+          "proposal_policy": "existing-serving-split",
+          "name": "Original quality reference",
+          "profile": "A",
+          "capture_scope": "draft-balanced",
+          "family": [
+            false,
+            false,
+            "ours"
+          ],
+          "prefill": "REFERENCE",
+          "output_projection": "bfloat16",
+          "description": "Original target/reference prefill. Numerical leader in latest small teacher fixture, not a general agent-quality guarantee."
+        },
+        "cold_load_for_projection_change": true,
+        "quality_available_in_either_bank": true,
+        "gpu_qualification": "Required at each cold load by the retained all-rank startup gates; no new measured speed is implied by packaging."
+      }
+    },
+    "new_image_gpu_boot_tested": false,
+    "model_weights_included": false,
+    "size_bytes": 21921829575,
+    "archive_roundtrip_load_passed": true
+  },
+  "layered_build": {
+    "passed": true,
+    "tag": "star-ds1017:2026.11.02-speed-k5",
+    "image_id": "sha256:533705b927514a2bf25052c5e66616432176ec8d7c8447757ce809bbc59771ed",
+    "base_image": "sha256:7ecbcf725f31d1b5bc05fc6863a16a94ef9c1c6cf7441e0a5c257fcd430e4d94",
+    "default_lane": "speed",
+    "settings": {
+      "speed": {
+        "lane": "speed",
+        "kv_cache_dtype": "bfloat16",
+        "verification_width": 5,
+        "confidence_gate": false,
+        "adaptive_width": false,
+        "proposal_policy": "existing-serving-split",
+        "name": "Speed",
+        "profile": "GN-SPEED-WIDE",
+        "capture_scope": "draft-speed",
+        "family": [
+          true,
+          true,
+          "hybrid"
+        ],
+        "prefill": "MOE_RAGGED",
+        "output_projection": "fp8-short-rows",
+        "description": "Speed default: short-row FP8 dense/output projection, retained specialized experts, fast draft head/sampler, fixedfive and gateoff."
+      },
+      "bf16": {
+        "lane": "bf16",
+        "kv_cache_dtype": "bfloat16",
+        "verification_width": 5,
+        "confidence_gate": false,
+        "adaptive_width": false,
+        "proposal_policy": "existing-serving-split",
+        "name": "BF16 projection",
+        "profile": "GN-BALANCED-WIDE",
+        "capture_scope": "draft-balanced",
+        "family": [
+          true,
+          false,
+          "hybrid"
+        ],
+        "prefill": "MOE_RAGGED",
+        "output_projection": "bfloat16",
+        "description": "BF16 output projection with the retained fast dense/expert/draft paths. Precision-conservative option, not a proved accuracy winner."
+      },
+      "quality": {
+        "lane": "quality",
+        "kv_cache_dtype": "bfloat16",
+        "verification_width": 5,
+        "confidence_gate": false,
+        "adaptive_width": false,
+        "proposal_policy": "existing-serving-split",
+        "name": "Original quality reference",
+        "profile": "A",
+        "capture_scope": "draft-balanced",
+        "family": [
+          false,
+          false,
+          "ours"
+        ],
+        "prefill": "REFERENCE",
+        "output_projection": "bfloat16",
+        "description": "Original target/reference prefill. Numerical leader in latest small teacher fixture, not a general agent-quality guarantee."
+      }
+    },
+    "verification": {
+      "passed": true,
+      "lane_tests": 25,
+      "default_lane": "speed",
+      "lanes": [
+        "speed",
+        "bf16",
+        "quality"
+      ],
+      "real_profile_scope_integration": true,
+      "source_manifest_sha256": "da664be32b3a20cf76adb21d0e6aad4fb9abe542fe6859d18d2bad797e936613",
+      "recipe_sha256": "6e55c69c51af1d1cac6598706364937bfbc941688eca56640497359c85a7458f",
+      "identity": "22f9a157bb94b0f16ca5e2a62f4b8dbb7786b6117fd9f392ad7f9e3eb6fc3b91",
+      "cuda_initialized": false,
+      "qualified_runtime_base": "sha256:7ecbcf725f31d1b5bc05fc6863a16a94ef9c1c6cf7441e0a5c257fcd430e4d94",
+      "runtime_and_native_unchanged": true,
+      "new_image_gpu_boot_tested": false,
+      "speed_bank_gpu_startup_tested": false,
+      "scope": "Exact-source/native attestation plus CPU tests, derivative packaging only. GPU qualification and benchmarks belong to pinned base/mounted runtime. No new GPU model reload."
+    },
+    "source_context_sha256": "b0d68ddef5dbb7968ecd6d3988db791568f90d1222b8379a43cb07e503a26945",
+    "build_log_sha256": "5c9a9eaa323f54516d6d23ca36f59ae5a785883fa49c0d0bc3077fc327852c4c",
+    "size_bytes": 22224225142,
+    "created": 1793609614.4276352,
+    "runtime_and_native_source_unchanged": true,
+    "new_speed_gpu_boot_tested": false,
+    "new_performance_measured": false,
+    "healthy_owner_restarted": false,
+    "registry_pushed": false
+  },
+  "archive_contents_verification": {
+    "passed": true,
+    "image_id": "sha256:d8ede442bb7f9b44fa922ea2d4ef60d799d268c787513d1054fc092760238d37",
+    "single_layer_diff_id_verified": "sha256:73fb91d9249556fb17557088d1e9f6853c008fb73b2ed11cc03e69faac999b97",
+    "config_json_sha256_verified": true,
+    "all_oci_blob_digests_verified": true,
+    "independent_of_existing_docker_layer_cache": true,
+    "layer_bytes": 22128911360
+  },
+  "private_audit_mount_not_distributed": {
+    "passed": true,
+    "private_audit_mount_not_distributed": true,
+    "gpu_devices_absent": true
+  },
+  "download_manifest_sha256": "4b3d5114dc4a322c2d62170dba1631346f67ff43d943b68c63de8aa161cdf8ed",
+  "sanitization_summary_sha256": "61a43fe35e2de419744671e867aac7a710c15f6209e113ba70d2cd374df861c1",
+  "download_loader_smoke": {
+    "passed": true,
+    "actual_docker_loads": 2,
+    "parts": 5,
+    "archive_and_image_identity_verified": true,
+    "corrupt_cached_part_repaired": true,
+    "cuda_used": false
+  },
+  "registry_pushed": false,
+  "distribution": "GitHub Release split Docker archive",
+  "healthy_owner_restarted": false,
+  "new_gpu_boot_tested": false
+}

@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "tag": "star-ds1017:2026.11.02-balanced-k5",
+  "image_id": "sha256:16d47d8d6059f8d4abfa159268bc9f3d65f9fc3b65311a481cd15991c572ee7c",
+  "base_image": "sha256:7ecbcf725f31d1b5bc05fc6863a16a94ef9c1c6cf7441e0a5c257fcd430e4d94",
+  "source_context_tar_sha256": "f691ee2b1a75592dc557b7187a0210b71b091ce4947c9215d299b213326fb145",
+  "build_log_sha256": "58a0a24855eaf23dba4419a11c71ac3da856791819b6ddd23bf2d833408a7ba0",
+  "verification": {
+    "passed": true,
+    "source_manifest_sha256": "da664be32b3a20cf76adb21d0e6aad4fb9abe542fe6859d18d2bad797e936613",
+    "recipe_sha256": "8bf8b3a4e180fa8023be4697537c6c3f00263c8e75723c341ef16b4af6b6aee8",
+    "identity": "22f9a157bb94b0f16ca5e2a62f4b8dbb7786b6117fd9f392ad7f9e3eb6fc3b91",
+    "cuda_initialized": false,
+    "qualified_runtime_base": "sha256:7ecbcf725f31d1b5bc05fc6863a16a94ef9c1c6cf7441e0a5c257fcd430e4d94",
+    "runtime_and_native_unchanged": true,
+    "new_image_gpu_boot_tested": false,
+    "scope": "Exact-source/native attestation plus CPU tests, derivative packaging only. GPU qualification and benchmarks belong to pinned base/mounted runtime. No new GPU model reload."
+  },
+  "created": 1793602814.323092,
+  "size_bytes": 22224059610,
+  "registry_pushed": false,
+  "new_gpu_boot_tested": false,
+  "healthy_owner_restarted": false,
+  "scope": "Versioned derivative packages source/recipe with identical qualified runtime/native. CPU/native/source checks run with no GPU and network none. No model/GPU reload or public/Hermes promotion."
+}

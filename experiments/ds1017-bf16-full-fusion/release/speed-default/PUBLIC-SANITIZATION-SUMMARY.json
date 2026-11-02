@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "full_audit_receipt_sha256": "48ccd4392c6dbfabc19a8728f5a42dab9a1078f8f46dc026793751287c7e77d6",
+  "scanned_files": 170721,
+  "protected_runtime_native_and_source_files": 327,
+  "protected_runtime_native_and_source_unchanged": true,
+  "removed_paths_count": 997,
+  "privacy_only_text_edits": [
+    {
+      "path": "/opt/star-abc/tools/launch.py",
+      "before": "2bdacee7152c2d5629ecd98505af4282f56de5d62faad1e523ca9bef947693bb",
+      "after": "d660c536d7545650da227a1dd92645cde18d53f91c2002eaec94c35fcef30353"
+    },
+    {
+      "path": "/opt/star-abc/tools/bind_resident_engram.py",
+      "before": "26451dcca511f77213d77865c9148623d423fd32969dc2248d4a3fa7db712ebb",
+      "after": "dbab876f7e90fef1e7abba7ee1dca37d89ffcfecb3dd49c6c8086b601014f634"
+    },
+    {
+      "path": "/opt/star-abc/tools/prepare_launch.py",
+      "before": "e3319ac0cba463d05bf20ce2f63c564d0070f4e0002e8b4d70674c8c0a6f4125",
+      "after": "523ee0ccc1e6eeb6d610bac745f61772783a7579efe75a177af43b82222538dd"
+    },
+    {
+      "path": "/opt/star-abc/tools/stream_wall_probe.py",
+      "before": "f21a8724d18c83f2c64429d9962a6990323c5bcf0dede8f25c0448631e2168f2",
+      "after": "eb892150a04122526c1474f46a4fd32ba5c1c7b500bd33029b93fdd326403f52"
+    },
+    {
+      "path": "/opt/star-abc/tools/code_oracle.py",
+      "before": "5eff9d4a0f81280d628dcbbbf77ae8acee3138d6f69639ae9556e6bc6a10efe8",
+      "after": "c71e1a792b76a435f7114f461265b2e124b3f8c0912666bd64cad79eefc0dc36"
+    },
+    {
+      "path": "/opt/star-abc/tools/check_staged.py",
+      "before": "b21c11ca1855492aa7cb07680e6a23945e36f1393df248033646b32d65c35889",
+      "after": "81c0333f7a8134bef282cd8c0dbadedc8da4c69ad962f3756a2a50edb34b63ad"
+    },
+    {
+      "path": "/usr/local/lib/python3.12/dist-packages/transformers/testing_utils.py",
+      "before": "c7bdac0c85b0929742c4e833634bf22b54314f322c78e1bd45e75e69504ecd4b",
+      "after": "9ed38aad4a8033433473b4793ab5a2be1d998219f842aa12378f8d38ab05905e",
+      "reason": "Redacted upstream sandbox-only test credential literal; no inference code changed"
+    },
+    {
+      "path": "/opt/star-prefill/package/prefill-reference/launch.json",
+      "before": "3c2e92de56165f4b3b19faffe69e1c41cfde1dbbd0930743b09739c0c47b8424",
+      "after": "aeda07a74e60dccc1c333555003da781006f79d0c208d53281bc37a29238c09b"
+    },
+    {
+      "path": "/opt/star-prefill/reference/launch.json",
+      "before": "3c2e92de56165f4b3b19faffe69e1c41cfde1dbbd0930743b09739c0c47b8424",
+      "after": "aeda07a74e60dccc1c333555003da781006f79d0c208d53281bc37a29238c09b"
+    }
+  ],
+  "expanded_full_scan_includes_linux_user_paths": true,
+  "flattened_public_layers": 1,
+  "inherited_deleted_layers_distributed": false,
+  "model_weights_included": false
+}

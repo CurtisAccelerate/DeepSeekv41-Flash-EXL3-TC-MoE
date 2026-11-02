@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "private_audit_mount_not_distributed": true,
+  "gpu_devices_absent": true
+}

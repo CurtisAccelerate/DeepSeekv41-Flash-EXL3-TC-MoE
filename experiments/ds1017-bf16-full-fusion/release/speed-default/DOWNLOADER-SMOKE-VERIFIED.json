@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "actual_docker_loads": 2,
+  "parts": 5,
+  "archive_and_image_identity_verified": true,
+  "corrupt_cached_part_repaired": true,
+  "cuda_used": false
+}

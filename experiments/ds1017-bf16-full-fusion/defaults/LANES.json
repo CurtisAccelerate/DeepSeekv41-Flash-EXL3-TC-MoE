@@ -1,0 +1,62 @@
+{
+  "default": "speed",
+  "lanes": {
+    "speed": {
+      "lane": "speed",
+      "kv_cache_dtype": "bfloat16",
+      "verification_width": 5,
+      "confidence_gate": false,
+      "adaptive_width": false,
+      "proposal_policy": "existing-serving-split",
+      "name": "Speed",
+      "profile": "GN-SPEED-WIDE",
+      "capture_scope": "draft-speed",
+      "family": [
+        true,
+        true,
+        "hybrid"
+      ],
+      "prefill": "MOE_RAGGED",
+      "output_projection": "fp8-short-rows",
+      "description": "Speed default: short-row FP8 dense/output projection, retained specialized experts, fast draft head/sampler, fixedfive and gateoff."
+    },
+    "bf16": {
+      "lane": "bf16",
+      "kv_cache_dtype": "bfloat16",
+      "verification_width": 5,
+      "confidence_gate": false,
+      "adaptive_width": false,
+      "proposal_policy": "existing-serving-split",
+      "name": "BF16 projection",
+      "profile": "GN-BALANCED-WIDE",
+      "capture_scope": "draft-balanced",
+      "family": [
+        true,
+        false,
+        "hybrid"
+      ],
+      "prefill": "MOE_RAGGED",
+      "output_projection": "bfloat16",
+      "description": "BF16 output projection with the retained fast dense/expert/draft paths. Precision-conservative option, not a proved accuracy winner."
+    },
+    "quality": {
+      "lane": "quality",
+      "kv_cache_dtype": "bfloat16",
+      "verification_width": 5,
+      "confidence_gate": false,
+      "adaptive_width": false,
+      "proposal_policy": "existing-serving-split",
+      "name": "Original quality reference",
+      "profile": "A",
+      "capture_scope": "draft-balanced",
+      "family": [
+        false,
+        false,
+        "ours"
+      ],
+      "prefill": "REFERENCE",
+      "output_projection": "bfloat16",
+      "description": "Original target/reference prefill. Numerical leader in latest small teacher fixture, not a general agent-quality guarantee."
+    }
+  }
+}

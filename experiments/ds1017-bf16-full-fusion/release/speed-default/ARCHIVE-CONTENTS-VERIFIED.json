@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "image_id": "sha256:d8ede442bb7f9b44fa922ea2d4ef60d799d268c787513d1054fc092760238d37",
+  "single_layer_diff_id_verified": "sha256:73fb91d9249556fb17557088d1e9f6853c008fb73b2ed11cc03e69faac999b97",
+  "config_json_sha256_verified": true,
+  "all_oci_blob_digests_verified": true,
+  "independent_of_existing_docker_layer_cache": true,
+  "layer_bytes": 22128911360
+}

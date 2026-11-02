@@ -18,6 +18,10 @@ We extended our optimized DeepSeek serving stack with prefill fusion across all 
 
 Special thanks to [GNmac](https://github.com/GNmac-lab/deepseek-v41-flash-1017-cmp170hx) for the FP8 and draft-sampling work adapted in this update; see the [existing attribution document](NOTICE.md).
 
+[Download the Docker image](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/releases/tag/2026.11.02-speed-k5) · [Architecture and tradeoffs](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/BUILD-DECISIONS-OURS-VS-GNMAC.png).
+
+**Docker default: speed.** The new recipe enables short-row FP8 output projection with BF16 KV. Explicit `bf16` and original-target `quality` settings are included; see [lane settings and cold-load requirements](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-EXL3-TC-MoE/blob/main/experiments/ds1017-bf16-full-fusion/release/speed-default/README.md).
+
 ### Tentative speed winner
 
 | Configuration | Count tok/s | Code tok/s | Prose tok/s | Prose full wall s |
@@ -37,7 +41,7 @@ One-user Morrow, 400 tokens at 140 W; decode excludes TTFT and prose wall includ
 
 Lower PPL/NLL is better. The original ranks numerically best in the latest 96-request synthetic fixture, but the difference is smaller than repeat variation; no general accuracy win or equivalence is established. An earlier target-only study favored BF16 projection (PPL 1.165453 vs 1.170190 for FP8 projection), but those are not quality scores for the complete 143/135 tok/s recipes.
 
-The packaged 135 tok/s option is a precision-conservative alternative, not a proven quality winner or blanket recommendation. Published snapshots identify that option; users decide their preferred tradeoff.
+The 135 tok/s BF16-projection option is a precision-conservative alternative, not a proven quality winner. Docker defaults to the speed recipe; the original target remains the latest small-fixture likelihood reference.
 
 [Full November 2 report, all-user timing, perplexity, caveats and attribution](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md).
 

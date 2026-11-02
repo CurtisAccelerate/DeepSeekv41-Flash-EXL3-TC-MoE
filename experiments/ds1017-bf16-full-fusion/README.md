@@ -1,24 +1,30 @@
-# Published BF16-projection option and reader choice
+# Speed-default Docker and configurable projection/quality settings
 
-We extended our optimized DeepSeek serving stack with prefill fusion across all 40 target layers, faster target execution and integrated draft sampling, while preserving our specialized expert shapes, split attention and communication paths. We compared FP8 and BF16 output projection with BF16 KV, measuring decode speed, full request wall time and perplexity. The packaged option uses BF16 output projection and fixed-five verification.
+We extended our optimized DeepSeek serving stack with prefill fusion across all 40 target layers, faster target execution and integrated draft sampling, while preserving our specialized expert shapes, split attention and communication paths. We compared FP8 and BF16 output projection with BF16 KV, measuring decode speed, full request wall time and perplexity. The new Docker defaults to the speed option with short-row FP8 output projection and fixed-five verification. BF16 KV is retained in every lane.
 
 Special thanks to [GNmac](https://github.com/GNmac-lab/deepseek-v41-flash-1017-cmp170hx) for the FP8 and draft-sampling work adapted in this update; see the [existing attribution document](NOTICE.md).
 
-The [November 2 headline comparison](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md) leads with the tentative speed winner (earlier FP8 projection, 143.06 prose tok/s), then the tentative quality winner in the latest fixture (original target, PPL 1.166442 versus 1.168604 for this option). The packaged option measured 135.18 prose tok/s in its latest confirmation. Users choose their tradeoff; archived default/snapshot names identify this packaged option, not proof of an overall winner.
+The [November 2 headline comparison](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md) leads with the tentative speed winner (earlier FP8 projection, 143.06 prose tok/s), then the tentative quality winner in the latest fixture (original target, PPL 1.166442 versus 1.168604 for this option). The BF16-projection option measured 135.18 prose tok/s in its latest confirmation. The current Docker default selects the speed recipe. The original target remains the latest small-fixture numerical likelihood reference.
 
-[Current full report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md) · [Packaged BF16 recipe](defaults/DEFAULT-RECIPE.json) · [Supported private client](defaults/balanced_default_client.py) · [Attribution](NOTICE.md).
+[Current full report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md) · [Speed-default recipe and options](defaults/DEFAULT-RECIPE.json) · [Supported private client](defaults/balanced_default_client.py) · [Attribution](NOTICE.md).
 
-Use the client only against an already-qualified dedicated owner:
+[Download the public Docker archive](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/releases/tag/2026.11.02-speed-k5). Its flattened filesystem excludes private build history and preserves every pinned inference/native/source file. Download instructions and checksums are attached to the release.
+
+## Docker default and easy settings
+
+The new default is `speed`; set `DS1017_LANE=bf16` at cold load for BF16 output projection, or select `quality` for the original target/reference prefill. All lanes retain BF16 KV and our specialized expert/attention/communication paths. `quality` is the latest small-fixture numerical reference, not a general accuracy guarantee.
 
 ```sh
-python defaults/balanced_default_client.py --root /path/to/qualified-stage --request request.json --out response.json
+docker run --rm --runtime=runc --network=none IMAGE describe
+docker run --rm --runtime=runc --network=none -e DS1017_LANE=bf16 IMAGE describe
+python defaults/configure_launch.py --spec /path/to/fresh-stage/launch.json --image sha256:IMAGE_ID
+python defaults/check_ready.py --root /path/to/stage
+python defaults/lane_client.py --root /path/to/stage --request request.json --out result.json
 ```
 
-The request file is one streaming API body or a list of one through eight bodies. The client selects the recipe, records actual wall/TTFT/gaps and restores the reference/private paused state on exit. `--greedy-proposals` is explicit opt-in with the mixed speed and seeded-repeat limitations in the report. This is not a general public serving launcher or Hermes promotion.
+`describe` inspects settings without loading the model. The configure command defaults to speed and operates only on a fresh frozen stage; rerun its mounted-source preflight and retained all-rank GPU startup checks before requests. Select `--lane bf16` when preparing a fresh BF16-projection stage and when using its request client. The original `--lane quality` request path works in either qualified bank. Projection-bank changes require a cold load; a wrong-scope request fails instead of falling back. Model/data mounts and the existing private admission protocol are retained.
 
-The original target is the current small-fixture numerical accuracy reference. The packaged BF16 recipe has tangible wall-time gains over the original and retains precision safeguards; general accuracy gain/equivalence is not established. It is not the demonstrated quality winner or a universal recommendation. Narrow/adaptive/gated source is retained for reproducibility, not selected or silently admitted for sampled workloads.
-
-Source updates are in place, with all inference/native bytes pinned to the measured image. Privacy-only offline-helper changes have both tested/published hashes in SOURCE-MANIFEST.json. Run `python check_sources.py`.
+The entry point and client use existing runtime profiles. The new image build tests settings/profile compatibility without initializing CUDA. It does not imply a newly measured143tok/s result or a newly qualified speed-bank cold load. See [complete settings and validation scope](release/speed-default/README.md). The former BF16-only recipe/client and build records remain archived; they are not the new default.
 
 ## Historical November1 integration and qualification
 
@@ -135,7 +141,7 @@ and CurtisAccelerate contribution boundaries. No model weights or compiled
 binary modules are committed.
 
 
-## Verified Docker packaging
+## Archived BF16-only Docker packaging
 
 Local versioned tag `star-ds1017:2026.11.02-balanced-k5`, immutable image `sha256:16d47d8d6059f8d4abfa159268bc9f3d65f9fc3b65311a481cd15991c572ee7c`. The derivative passed219-file source manifest verification,121 CPU tests plus1,164 draft-plan cases, native ABI/pin checks and a no-CUDA check. It packages the unchanged GPU-qualified runtime; a fresh GPU boot of the derivative is not claimed. It has not been pushed to a container registry. The inherited base must already be available locally.
 
@@ -147,4 +153,4 @@ docker tag sha256:7ecbcf725f31d1b5bc05fc6863a16a94ef9c1c6cf7441e0a5c257fcd430e4d
 docker build --network=none --pull=false --build-arg BASE_IMAGE=star-release-runtime:7ecbcf725f31 -t star-ds1017:2026.11.02-balanced-k5 /tmp/ds1017-balanced-context
 ```
 
-This is a private source/runtime artifact, not a complete model-weight image or a repointed public service. The build materializes existing pinned host-overlay code, without copying model data, and keeps two filesystem layers to fit the deeply layered retained base. Initial missing-path/layer-depth build failures are preserved in the internal evidence. See release/DOCKER-BUILD-VERIFIED.json and DEFAULT-SNAPSHOT.json.
+This is a private source/runtime artifact, not a complete model-weight image or a repointed public service. The build materializes existing pinned host-overlay code, without copying model data, and keeps two filesystem layers to fit the deeply layered retained base. Initial missing-path/layer-depth build failures are preserved in the internal evidence. See release/bf16-20261102/DOCKER-BUILD-VERIFIED.json and release/bf16-20261102/DEFAULT-SNAPSHOT.json.

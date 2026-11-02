@@ -1,0 +1,93 @@
+{
+  "passed": true,
+  "image_id": "sha256:d8ede442bb7f9b44fa922ea2d4ef60d799d268c787513d1054fc092760238d37",
+  "tag": "ds1017:2026.11.02-speed-k5",
+  "source_layered_image": "sha256:533705b927514a2bf25052c5e66616432176ec8d7c8447757ce809bbc59771ed",
+  "flattened_layers": 1,
+  "runtime_config_preserved": true,
+  "windows_only_args_escaped_normalized": true,
+  "metadata_reference": "https://github.com/moby/docker-image-spec/blob/main/spec.md",
+  "sanitization_sha256": "48ccd4392c6dbfabc19a8728f5a42dab9a1078f8f46dc026793751287c7e77d6",
+  "cpu_verification_passed": true,
+  "lane_descriptions": {
+    "speed": {
+      "default_lane": "speed",
+      "selected": {
+        "lane": "speed",
+        "kv_cache_dtype": "bfloat16",
+        "verification_width": 5,
+        "confidence_gate": false,
+        "adaptive_width": false,
+        "proposal_policy": "existing-serving-split",
+        "name": "Speed",
+        "profile": "GN-SPEED-WIDE",
+        "capture_scope": "draft-speed",
+        "family": [
+          true,
+          true,
+          "hybrid"
+        ],
+        "prefill": "MOE_RAGGED",
+        "output_projection": "fp8-short-rows",
+        "description": "Speed default: short-row FP8 dense/output projection, retained specialized experts, fast draft head/sampler, fixedfive and gateoff."
+      },
+      "cold_load_for_projection_change": true,
+      "quality_available_in_either_bank": true,
+      "gpu_qualification": "Required at each cold load by the retained all-rank startup gates; no new measured speed is implied by packaging."
+    },
+    "bf16": {
+      "default_lane": "speed",
+      "selected": {
+        "lane": "bf16",
+        "kv_cache_dtype": "bfloat16",
+        "verification_width": 5,
+        "confidence_gate": false,
+        "adaptive_width": false,
+        "proposal_policy": "existing-serving-split",
+        "name": "BF16 projection",
+        "profile": "GN-BALANCED-WIDE",
+        "capture_scope": "draft-balanced",
+        "family": [
+          true,
+          false,
+          "hybrid"
+        ],
+        "prefill": "MOE_RAGGED",
+        "output_projection": "bfloat16",
+        "description": "BF16 output projection with the retained fast dense/expert/draft paths. Precision-conservative option, not a proved accuracy winner."
+      },
+      "cold_load_for_projection_change": true,
+      "quality_available_in_either_bank": true,
+      "gpu_qualification": "Required at each cold load by the retained all-rank startup gates; no new measured speed is implied by packaging."
+    },
+    "quality": {
+      "default_lane": "speed",
+      "selected": {
+        "lane": "quality",
+        "kv_cache_dtype": "bfloat16",
+        "verification_width": 5,
+        "confidence_gate": false,
+        "adaptive_width": false,
+        "proposal_policy": "existing-serving-split",
+        "name": "Original quality reference",
+        "profile": "A",
+        "capture_scope": "draft-balanced",
+        "family": [
+          false,
+          false,
+          "ours"
+        ],
+        "prefill": "REFERENCE",
+        "output_projection": "bfloat16",
+        "description": "Original target/reference prefill. Numerical leader in latest small teacher fixture, not a general agent-quality guarantee."
+      },
+      "cold_load_for_projection_change": true,
+      "quality_available_in_either_bank": true,
+      "gpu_qualification": "Required at each cold load by the retained all-rank startup gates; no new measured speed is implied by packaging."
+    }
+  },
+  "new_image_gpu_boot_tested": false,
+  "model_weights_included": false,
+  "size_bytes": 21921829575,
+  "archive_roundtrip_load_passed": true
+}
