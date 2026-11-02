@@ -1,0 +1,74 @@
+{
+  "started": 1793584475.321217,
+  "cuda_devices_visible": false,
+  "installed": false,
+  "gpu_qualified": false,
+  "nvcc_sha256": "b8e2347d9d7fcadf8812a27324d515de99d033d3e48611811ece7e66d7895f8a",
+  "nvcc_version": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2025 NVIDIA Corporation\nBuilt on Wed_Aug_20_01:58:59_PM_PDT_2025\nCuda compilation tools, release 13.0, V13.0.88\nBuild cuda_13.0.r13.0/compiler.36424714_0\n",
+  "host_compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "source_manifest_sha256": "dacdc3f8bccea69259fc39896e835781ba8bb770c7d4b6d1ac6657330f7b6a4b",
+  "rows": [
+    4,
+    16,
+    20,
+    28,
+    32
+  ],
+  "builds": [
+    {
+      "kbits": 2,
+      "cmd": [
+        "/usr/local/cuda/bin/nvcc",
+        "-shared",
+        "-Xcompiler",
+        "-fPIC",
+        "-arch=sm_80",
+        "-std=c++17",
+        "-O3",
+        "--use_fast_math",
+        "--expt-relaxed-constexpr",
+        "-Xptxas=-v",
+        "-diag-suppress=177,20012",
+        "-DKBITS=2",
+        "-DGU_DIRECT=false",
+        "-I/narrow-source/src",
+        "/narrow-source/launch.cu",
+        "-o",
+        "/build-output/libgu_narrow_k2.so"
+      ],
+      "sha256": "4ec2e535c524f10710145cdf8f95e7f2d3d2a98e8af71aa9ed80cae29c4e63d4",
+      "bytes": 1856664,
+      "export_checked": true,
+      "log_sha256": "79797d85ac70970581e2ccc85e75c2c2683eba2b92d95c4228949abef91912ce"
+    },
+    {
+      "kbits": 3,
+      "cmd": [
+        "/usr/local/cuda/bin/nvcc",
+        "-shared",
+        "-Xcompiler",
+        "-fPIC",
+        "-arch=sm_80",
+        "-std=c++17",
+        "-O3",
+        "--use_fast_math",
+        "--expt-relaxed-constexpr",
+        "-Xptxas=-v",
+        "-diag-suppress=177,20012",
+        "-DKBITS=3",
+        "-DGU_DIRECT=false",
+        "-I/narrow-source/src",
+        "/narrow-source/launch.cu",
+        "-o",
+        "/build-output/libgu_narrow_k3.so"
+      ],
+      "sha256": "956508b54ca3b4f11165c7cf218026e2cc380f583057f5a98a510562957cb720",
+      "bytes": 1778840,
+      "export_checked": true,
+      "log_sha256": "ae1f6b013b956c904aca8707f28feff42d38847fae5e3f99b227f1616e2d6f71"
+    }
+  ],
+  "finished": 1793584503.9819112,
+  "passed": true,
+  "qualification_required": "Actual-weight/fp64/current-extension parity and valid per-rank narrow graph replay before any runtime installation; all old shapes continue using old pinned libraries."
+}

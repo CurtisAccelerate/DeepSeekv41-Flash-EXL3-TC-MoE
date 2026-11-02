@@ -1,0 +1,2 @@
+# Preserve measured source, manifests and client hashes across checkouts.
+* -text whitespace=cr-at-eol,-blank-at-eof

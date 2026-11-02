@@ -1,7 +1,7 @@
 ## Publication privacy cleanup
 
 The final public tree replaces the private LAN endpoint with a loopback example
-and a site-specific Docker socket with `/run/dsv41-private/docker.sock` in six
+and a site-specific Docker socket with `/run/dsv41-private/docker.sock` in seven
 offline helper files. Configure these examples for your own isolated environment.
 The source manifest records original tested hashes and sanitized published hashes
 for those helpers. All inference runtime/native source remains byte-identical to

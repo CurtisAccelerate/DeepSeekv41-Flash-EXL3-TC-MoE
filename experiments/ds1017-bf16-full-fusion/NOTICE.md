@@ -8,7 +8,7 @@ model, quantization or pre-existing optimizations.
 | Component | Source / contribution boundary |
 |---|---|
 | Short-row FP8 dense and `wo_a`, FP8 draft head, fused Markov selection | GNmac's recipe and donor code; ported into our ABI, graph bank, sampling and qualification guards |
-| Adaptive verification and masked speculative expert work | GNmac/Morrowmake designs retained as optional source; not enabled in the measured main A/B/C run |
+| Adaptive verification and masked speculative expert work | GNmac/Morrowmake designs retained as optional source; tested in the November2 finite locally calibrated program; fixedfive/gateoff selected, adaptive/gated policies not promoted |
 | Tensor-core MoE prefill schedule | Morrowmake operator foundations, integrated here for hidden 5120, intermediate 512/640, K2/K3, exact API/workspace/dispatch qualification |
 | Full direct integer combine/ragged pack | This V6 integration: actual ratio 1/2/0 coverage, closed-form row offsets, preserved invalid slots/order/bounds, existing attention API |
 | Floating sparse attention and index semantics | Retained vLLM ROCm primitives and SM80 adaptation; floating attention is not replaced by the integer fusion |

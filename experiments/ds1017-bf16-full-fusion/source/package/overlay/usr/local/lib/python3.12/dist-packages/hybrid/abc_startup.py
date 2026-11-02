@@ -92,6 +92,9 @@ def prepare(worker):
     if os.environ.get('STAR_ABC_OPERATOR_CHECKS','1')=='1':
         from . import abc_lane_check
         receipt['lane_operator_checks']=local('ABC lane reference fixtures',lambda:abc_lane_check.prepare(runner.get_model()))
+    if scope in ('draft-balanced','draft-speed'):
+        from . import abc_extra_fold_check
+        receipt['extra_fold_checks']=local('Actual-pack extra narrow rows',lambda:abc_extra_fold_check.prepare(runner))
     gc.collect();torch.cuda.empty_cache();torch.cuda.synchronize()
     receipt['dense_pack_bytes']=K.PACK_BYTES
     from . import abc_numeric
@@ -112,7 +115,7 @@ def prepare(worker):
             self.initial_consensus=consensus;self.initial_metadata_records=[]
         def guard(self,reserve=0):
             torch.cuda.synchronize();free=torch.cuda.mem_get_info(runner.device)[0]
-            if before-free+reserve>cap or free-reserve<1024**3:raise ValueError('ABC total retained allocation/floor exceeded')
+            if before-free+reserve>cap or free-reserve<1024**3:raise ValueError('ABC total retained allocation/floor exceeded: '+json.dumps(dict(before=before,free=free,growth=before-free,reserve=reserve,cap=cap,floor=1024**3)))
             if self.baseline_entries!={k:id(v) for k,v in self.wrapper.entries.items()}:raise ValueError('Incumbent entries changed')
             return dict(free=free,growth=max(0,before-free),cap=cap)
         def dummy(self,mode,*,target_only=False):
@@ -128,7 +131,7 @@ def prepare(worker):
                 with super().candidate_math():yield
             finally:r2_bank.ACTIVE=old_bank;r2_experts.ACTIVE=old_exp
     families={p.family():p for p in (PROFILES[x] for x in policy['families'])}
-    gate_ok={} if scope!='all' else {family:True for family in families if family in (PROFILES['B'].family(),PROFILES['B-LANE'].family())}
+    gate_ok={family:True for family in families} if scope in ('draft-balanced','draft-speed') else ({} if scope!='all' else {family:True for family in families if family in (PROFILES['B'].family(),PROFILES['B-LANE'].family())})
     def gate_probe(rt):
         from .attention_qualification import clone
         from .abc_gate_check import prefix_exact
@@ -153,7 +156,7 @@ def prepare(worker):
     for k in widths:
         for b in reversed(batches):
             for family,profile in families.items():
-                if k==3 and family!=PROFILES['B'].family():continue  # narrow/auto only use the combined target family
+                if k==3 and scope not in ('draft-balanced','draft-speed') and family!=PROFILES['B'].family():continue  # narrow/auto only use the combined target family
                 plan=Plan(b,k,profile);key=family_key(family,b,k)
                 if b==7 and k==5:
                     bank.targets[key]=bank.targets[family_key(family,8,5)]
@@ -181,8 +184,13 @@ def prepare(worker):
                         rt.entry['abc_mixed']=mixed
                     paths=rt.paths.copy();capture=rt.capture_context
                     if not paths.get('dense_native_fp8') and profile.dense:raise UnsafePreparation('ABC dense candidate captured no native FP8 calls')
+                    if not profile.dense and paths.get('dense_native_fp8'):raise UnsafePreparation('Dense-off component captured native FP8 dense')
+                    if not profile.woa and paths.get('woa_native_fp8'):raise UnsafePreparation('Projection-off component captured FP8 wo_a')
+                    if profile.experts=='ours' and paths.get('experts_lane'):raise UnsafePreparation('Original-expert component captured alternate expert lane')
                     if not paths.get('woa_native_fp8') and profile.woa and rt.rows<=16:raise UnsafePreparation('ABC wo_a candidate captured no fused calls')
                     if lane_rows(profile.experts,b,k) and not paths.get('experts_lane'):raise UnsafePreparation('ABC lane candidate fell through')
+                    if scope in ('draft-balanced','draft-speed') and k==3 and rt.rows in (4,16,20,28,32) and plan.experts=='coop' and not paths.get('experts_extra_fold'):
+                        raise UnsafePreparation('New narrow row did not use its qualified specialization')
                     comm=capture.collective_receipt()
                     expert_receipt=r2_experts.receipt(capture.experts,plan)
                     agree(expert_receipt['ok'],'ABC routed-expert coverage '+str(key))
@@ -209,12 +217,17 @@ def prepare(worker):
         bank.samplers[key]=state
         receipt['profiles'][str(key)]=dict(ready=True,reused_qualified_reference=True,fp8_draft=False,fused=False,gate=False,
             qualification='Original B1/R2 sampler proof and immutable binding retained; no new sampler capture')
+    sampler_pool=local('ABC shared serialized integrated-sampler scratch',torch.cuda.graph_pool_handle)
+    integrated_states=[]
     for key in policy['samplers']:
         b,fp8,fused,gate=key
         # This phase contains all-gathers; errors are never locally swallowed.
-        state,srec=abc_sampler.prepare(p,nccl,start,end,b,fp8,fused,gate,q8,consensus)
+        state,srec=abc_sampler.prepare(p,nccl,start,end,b,fp8,fused,gate,q8,consensus,pool=sampler_pool)
         roots.append(state);bank.samplers[key]=state;receipt['profiles'][str(key)]=srec
+        integrated_states.append(state)
+        print('STAR_ABC_SAMPLER_MEMORY '+json.dumps(dict(rank=int(worker.rank),key=key,free=torch.cuda.mem_get_info(runner.device)[0],allocated=torch.cuda.memory_allocated(runner.device),reserved=torch.cuda.memory_reserved(runner.device))),flush=True)
         agree(True,'ABC sampler completed '+str(key))
+    receipt['sampler_interleave']=abc_sampler.qualify_interleaved(p,integrated_states,consensus)
     # Fill the existing B1 sampled-capture hole with exactly the established BF16 q/RNG chain.
     from types import SimpleNamespace
     from . import r2_sampler

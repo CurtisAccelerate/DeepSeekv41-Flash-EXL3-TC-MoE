@@ -1,7 +1,7 @@
 """One drained test session; finite precaptured profiles, all-rank atomic selection."""
 import json,os,uuid
 from pathlib import Path
-from .abc_contract import PROFILES,validate_costs,validate_routes,digest
+from .abc_contract import PROFILES,validate_costs,validate_routes,validate_policy_costs,digest
 
 def worker_invoke(worker,method,*args):
     import torch
@@ -57,7 +57,7 @@ class Owner:
         self.c.save('abc-policy.json',record)
     async def select(self,name,costs=None):
         p=PROFILES[name]
-        if p.width=='auto':validate_costs(costs,self.identity)
+        if p.width=='auto':validate_policy_costs(costs,self.identity,name)
         elif costs is not None:raise ValueError('Costs only apply to auto width')
         await self.close()
         token=uuid.uuid4().hex;request=dict(token=token,profile=name,session=self.session,identity=self.identity,epoch=self.epoch+1)
@@ -106,7 +106,7 @@ class Owner:
             status=await self.rows('status')
             if not all(q['profile'] in r['available'] for r in status):raise ValueError('Profile is not ready on every rank')
             if PROFILES[q['profile']].experts=='routed' and not all(r.get('routes') is not None for r in status):raise ValueError('Measured per-B routing has not been installed')
-            if PROFILES[q['profile']].width=='auto':validate_costs(q['costs'],self.identity)
+            if PROFILES[q['profile']].width=='auto':validate_policy_costs(q['costs'],self.identity,q['profile'])
             try:return await self.select(q['profile'],q['costs'])
             except BaseException as exc:
                 # Partial/unknown outcomes never resume a guessed baseline.

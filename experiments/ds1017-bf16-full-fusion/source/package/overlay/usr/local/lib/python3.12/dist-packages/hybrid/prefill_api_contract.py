@@ -6,7 +6,8 @@ from pathlib import Path
 import re
 
 HOOK_SHA='0fd676958c111102c21d1d6dc4914175728050c42d00068ba5a6a9c460abdcf5'
-PLUGIN_SHA='be41583daa448d6148c1711e52cc24992cfaf5420369f22ba45e43378ff57433'
+PLUGIN_SHA='d07666241e6c0ff180c29fe750d7e003c816b7ff77330427ea5d85336c3b0165'
+PLUGIN_BASE_SHA='be41583daa448d6148c1711e52cc24992cfaf5420369f22ba45e43378ff57433'
 SITE='usr/local/lib/python3.12/dist-packages'
 HOOK_ARGS=['x2d','ids','weights','layer','expert_map','limit']
 NATIVE_ARGS=['x','topk_ids','topk_weights','packed_ptrs','packed_meta','expert_map','intermediate_size','bits_x2','out','workspace','swiglu_limit']
@@ -105,6 +106,12 @@ def audit(package,hook_path=None,plugin_path=None):
     plugin_path=Path(plugin_path) if plugin_path else site/'vllm_exl3/exl3.py'
     need(sha(hook_path)==HOOK_SHA,'Effective hook source SHA differs from actual mounted audit copy')
     need(sha(plugin_path)==PLUGIN_SHA,'Effective plugin source SHA differs from actual mounted audit copy')
+    raw=plugin_path.read_bytes()
+    eol=b'\r\n' if b'\r\n' in raw else b'\n'
+    original=b'                _w9_dispatch(exllamav3_ext.exl3_moe_coop, *_coop_args)'
+    added=b'                from hybrid.abc_extra_fold import try_launch as _extra_fold'+eol+b'                if not _extra_fold(_coop_args):'+eol+b'    '+original
+    need(raw.count(added)==1 and hashlib.sha256(raw.replace(added,original)).hexdigest()==PLUGIN_BASE_SHA,'Narrow hook changed pre-existing plugin bytes')
+
     h=site/'hybrid'
     checks=dict(plugin=check_plugin(read(plugin_path)),hook=check_hook(read(hook_path)),
         startup=check_startup(read(h/'prefill_startup.py')),

@@ -2848,7 +2848,9 @@ def apply_exl3_fused_moe(
                 _r2_kind = None  # dispatch_native already recorded the miss
             else:
                 from w9_exl_ab import dispatch as _w9_dispatch
-                _w9_dispatch(exllamav3_ext.exl3_moe_coop, *_coop_args)
+                from hybrid.abc_extra_fold import try_launch as _extra_fold
+                if not _extra_fold(_coop_args):
+                    _w9_dispatch(exllamav3_ext.exl3_moe_coop, *_coop_args)
                 if _r2_kind is not None:
                     sys.modules["hybrid.r2_experts"].record("coop")
                 return out

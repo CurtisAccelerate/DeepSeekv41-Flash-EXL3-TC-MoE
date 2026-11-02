@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "source_sha256": "e112b065f76d80e61e40b93d6a7128c4ead23954ec47c04b397eb943ca79d5f0",
+  "candidate_sha256": "0b5388a81b99a0bdc55fdf781107bcba1e02c7e2c3a8f2186875260bb9d8b0ce",
+  "unchanged_split_cpu_cases": 1152,
+  "explicit_random_single_overrides": 12,
+  "reverse_patch_exact": true,
+  "target_sampling_fields_unchanged": true,
+  "default_policy_unchanged": true,
+  "invalid_override_keeps_existing_split": true,
+  "installed": false,
+  "gpu_qualified": false,
+  "scope": "CPU draft-plan selection only. Does not qualify real proposal/rejection/q/RNG/distribution or performance. New image/native-source attestations and full GPU startup required before testing; narrow sampled admission remains blocked."
+}

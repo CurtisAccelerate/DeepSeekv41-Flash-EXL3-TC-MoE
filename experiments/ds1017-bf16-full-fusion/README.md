@@ -1,3 +1,25 @@
+# Selected balanced BF16 integration
+
+The November2 selected default recipe retains BF16KV/output projection, fixedfive, our specialized expert/attention/collective paths, full integer prefill fusion and Marlin prefill, with selected GNmac dense/expert and fast draft-head/sampler integration.
+
+[Current full report](https://github.com/CurtisAccelerate/DeepSeekv41-Flash-1017-EXL3-CMP170HX/blob/main/benchmarks/2026-11-02/README.md) · [Default recipe](defaults/DEFAULT-RECIPE.json) · [Supported private client](defaults/balanced_default_client.py) · [Attribution](NOTICE.md).
+
+Use the client only against an already-qualified dedicated owner:
+
+```sh
+python defaults/balanced_default_client.py --root /path/to/qualified-stage --request request.json --out response.json
+```
+
+The request file is one streaming API body or a list of one through eight bodies. The client selects the recipe, records actual wall/TTFT/gaps and restores the reference/private paused state on exit. `--greedy-proposals` is explicit opt-in with the mixed speed and seeded-repeat limitations in the report. This is not a general public serving launcher or Hermes promotion.
+
+The original target is the current small-fixture numerical accuracy reference. The balanced recipe is selected for tangible wall-time gains with retained precision safeguards; general accuracy gain/equivalence is not established. Narrow/adaptive/gated source is retained for reproducibility, not selected or silently admitted for sampled workloads.
+
+Source updates are in place, with all inference/native bytes pinned to the measured image. Privacy-only offline-helper changes have both tested/published hashes in SOURCE-MANIFEST.json. Run `python check_sources.py`.
+
+## Historical November1 integration and qualification
+
+The following dated material describes the prior stage, not current default or latest quality ranking.
+
 # DS1017: BF16 cache, qualified A/B/C decode and full prefill fusion
 
 **Measured experimental source export, November 1, 2026. Defaults remain off.**
@@ -15,8 +37,8 @@ The validated cache type is **bfloat16**, not FP16 and not FP8.
 ## Measured result
 
 The matched C-fixed, BF16-cache prefill comparison improved wall time by
-**4.3–6.7% beyond our MoE-only prefill baseline** over 2K–128K. At 128K:
-**91.585 → 87.615 seconds**. These are full request walls, not kernel timers.
+**4.3â€“6.7% beyond our MoE-only prefill baseline** over 2Kâ€“128K. At 128K:
+**91.585 â†’ 87.615 seconds**. These are full request walls, not kernel timers.
 The previous partial fusion covered 20 ratio-1 layers. This path also covers
 18 ratio-2 and 2 sliding-window-only layers. It directly builds the same int32
 indices and row pointers, preserving invalid slots, order and bounds.
@@ -107,3 +129,18 @@ implemented or qualified by this export.
 Read [NOTICE.md](NOTICE.md) for the separate GNmac, Morrowmake, vLLM, ExLlamaV3
 and CurtisAccelerate contribution boundaries. No model weights or compiled
 binary modules are committed.
+
+
+## Verified Docker packaging
+
+Local versioned tag `star-ds1017:2026.11.02-balanced-k5`, immutable image `sha256:16d47d8d6059f8d4abfa159268bc9f3d65f9fc3b65311a481cd15991c572ee7c`. The derivative passed219-file source manifest verification,121 CPU tests plus1,164 draft-plan cases, native ABI/pin checks and a no-CUDA check. It packages the unchanged GPU-qualified runtime; a fresh GPU boot of the derivative is not claimed. It has not been pushed to a container registry. The inherited base must already be available locally.
+
+Build a context outside this repository, then build on a host with that exact pinned base available:
+
+```sh
+python release/build_context.py --experiment . --out /tmp/ds1017-balanced-context
+docker tag sha256:7ecbcf725f31d1b5bc05fc6863a16a94ef9c1c6cf7441e0a5c257fcd430e4d94 star-release-runtime:7ecbcf725f31
+docker build --network=none --pull=false --build-arg BASE_IMAGE=star-release-runtime:7ecbcf725f31 -t star-ds1017:2026.11.02-balanced-k5 /tmp/ds1017-balanced-context
+```
+
+This is a private source/runtime artifact, not a complete model-weight image or a repointed public service. The build materializes existing pinned host-overlay code, without copying model data, and keeps two filesystem layers to fit the deeply layered retained base. Initial missing-path/layer-depth build failures are preserved in the internal evidence. See release/DOCKER-BUILD-VERIFIED.json and DEFAULT-SNAPSHOT.json.

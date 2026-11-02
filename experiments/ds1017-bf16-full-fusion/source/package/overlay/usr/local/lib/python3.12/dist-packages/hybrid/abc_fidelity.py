@@ -5,7 +5,8 @@ def rejection(metadata,sampling_metadata):
     if profile is None or not profile.oracle:return metadata
     if not sampling_metadata.all_greedy:raise RuntimeError('Forced-rejection controls require all-greedy requests')
     if not metadata.draft_token_ids.numel():return metadata
-    if any(n not in (0,5) for n in metadata.num_draft_tokens):raise RuntimeError('Oracle requires k5 verification geometry')
+    k=profile.width
+    if k not in (3,5) or any(n not in (0,k) for n in metadata.num_draft_tokens):raise RuntimeError('Oracle requires its exact fixed verification geometry')
     import dataclasses,torch
     R.BANK.hits['oracle_forced_rejection:'+profile.name]+=1
     # Only the comparison IDs change. Actual target inputs, graph shape, target

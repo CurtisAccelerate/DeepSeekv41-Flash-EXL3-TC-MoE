@@ -1,0 +1,38 @@
+[
+  {
+    "before": "request flag does not override that split. A step",
+    "after": "legacy draft-temperature flag does not override that split. The explicit\n``dsv41_proposal_policy=\"greedy\"`` test flag keeps target sampling unchanged and\nuses greedy proposals for a single random row. A step"
+  },
+  {
+    "before": "  dsv41_glog        1",
+    "after": "  dsv41_proposal_policy  \"greedy\"           test greedy proposals; default/unknown keeps serving split\n  dsv41_glog        1"
+  },
+  {
+    "before": "KEY_TQ = \"dsv41_draft_tq\"",
+    "after": "KEY_TQ = \"dsv41_draft_tq\"\nKEY_PROPOSAL_POLICY = \"dsv41_proposal_policy\""
+  },
+  {
+    "before": "    xcheck: bool = False\n",
+    "after": "    xcheck: bool = False\n    force_greedy: bool = False\n"
+  },
+  {
+    "before": "return self.tq is not None or self.glog or self.trace > 0 or self.xcheck",
+    "after": "return self.tq is not None or self.glog or self.trace > 0 or self.xcheck or self.force_greedy"
+  },
+  {
+    "before": "        xcheck=parse_level(extra, KEY_XCHECK) > 0,",
+    "after": "        xcheck=parse_level(extra, KEY_XCHECK) > 0,\n        force_greedy=(type(extra.get(KEY_PROPOSAL_POLICY)) is str and extra[KEY_PROPOSAL_POLICY] == \"greedy\"),"
+  },
+  {
+    "before": "    xcheck = False\n    for row,",
+    "after": "    xcheck = False\n    forced_random_single = False\n    for row,"
+  },
+  {
+    "before": "        tq.append(1.0 if (kind == \"random\" and len(req_ids) == 1) else 0.0)",
+    "after": "        forced_random_single = forced_random_single or (flags.force_greedy and kind == \"random\" and len(req_ids) == 1)\n        tq.append(1.0 if (kind == \"random\" and len(req_ids) == 1 and not flags.force_greedy) else 0.0)"
+  },
+  {
+    "before": "    if not (any_sample or any_glog or xcheck or mark is not None):",
+    "after": "    if not (any_sample or any_glog or xcheck or mark is not None or forced_random_single):"
+  }
+]

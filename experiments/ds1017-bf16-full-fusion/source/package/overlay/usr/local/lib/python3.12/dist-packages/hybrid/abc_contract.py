@@ -19,6 +19,24 @@ class Profile:
     def reference(self):return self.family()==(False,False,'ours')
 
 PROFILES = {p.name:p for p in (
+    Profile('GN-BALANCED-WIDE',True,False,'hybrid',True,True),
+    Profile('GN-BALANCED-NARROW',True,False,'hybrid',True,True,width=3),
+    Profile('GN-BALANCED-AUTO',True,False,'hybrid',True,True,width='auto'),
+    Profile('GN-BALANCED-GATE',True,False,'hybrid',True,True,gate=True),
+    Profile('GN-BALANCED-NARROW-GATE',True,False,'hybrid',True,True,gate=True,width=3),
+    Profile('GN-BALANCED-AUTO-GATE',True,False,'hybrid',True,True,gate=True,width='auto'),
+    Profile('GN-BALANCED-REFERENCE-DRAFT',True,False,'hybrid'),
+    Profile('GN-BALANCED-WIDE-ORACLE',True,False,'hybrid',True,True,oracle=True),
+    Profile('GN-BALANCED-NARROW-ORACLE',True,False,'hybrid',True,True,width=3,oracle=True),
+    Profile('GN-SPEED-WIDE',True,True,'hybrid',True,True),
+    Profile('GN-SPEED-NARROW',True,True,'hybrid',True,True,width=3),
+    Profile('GN-SPEED-AUTO',True,True,'hybrid',True,True,width='auto'),
+    Profile('GN-SPEED-GATE',True,True,'hybrid',True,True,gate=True),
+    Profile('GN-SPEED-NARROW-GATE',True,True,'hybrid',True,True,gate=True,width=3),
+    Profile('GN-SPEED-AUTO-GATE',True,True,'hybrid',True,True,gate=True,width='auto'),
+    Profile('GN-SPEED-REFERENCE-DRAFT',True,True,'hybrid'),
+    Profile('GN-SPEED-WIDE-ORACLE',True,True,'hybrid',True,True,oracle=True),
+    Profile('GN-SPEED-NARROW-ORACLE',True,True,'hybrid',True,True,width=3,oracle=True),
     Profile('A'),
     Profile('B', True, True, 'hybrid'),
     Profile('C', True, True, 'hybrid', True, True),
@@ -32,6 +50,7 @@ PROFILES = {p.name:p for p in (
     Profile('C-AUTO', True, True, 'hybrid', True, True, width='auto'),
     Profile('B-ROUTED',True,True,'routed'),Profile('C-ROUTED',True,True,'routed',True,True),
     Profile('B-NO-DENSE',False,True,'hybrid'),Profile('B-NO-WOA',True,False,'hybrid'),
+    Profile('B-OWN-EXPERTS',True,True,'ours'),
     Profile('C-LANE',True,True,'lane',True,True),Profile('B-LANE-GATE',True,True,'lane',gate=True),
     Profile('A-ORACLE',oracle=True),Profile('B-ORACLE',True,True,'hybrid',oracle=True),
     Profile('C-ORACLE',True,True,'hybrid',True,True,oracle=True),
@@ -40,6 +59,20 @@ PROFILES = {p.name:p for p in (
 
 def capture_policy(scope,confidence):
     """Finite declared bank geometry; ABC keeps the full reference, not extra target ablations."""
+    if scope in ('draft-balanced','draft-speed'):
+        batches=tuple(range(1,9));prefix='GN-BALANCED' if scope=='draft-balanced' else 'GN-SPEED'
+        gates=(False,True) if confidence else (False,)
+        return dict(batches=batches,widths=(5,3),families=(prefix+'-WIDE',),
+                    samplers=tuple((b,b<=3,True,g) for b in batches for g in gates),
+                    reference_samplers=tuple((b,False,False,False) for b in batches))
+    if scope=='selected':
+        batches=tuple(range(1,9))
+        return dict(batches=batches,widths=(5,),families=('B','B-NO-WOA'),samplers=(),
+                    reference_samplers=tuple((b,False,False,False) for b in batches))
+    if scope=='isolate':
+        batches=(1,2,8)
+        return dict(batches=batches,widths=(5,),families=('B','B-NO-DENSE','B-NO-WOA','B-OWN-EXPERTS'),
+                    samplers=(),reference_samplers=tuple((b,False,False,False) for b in batches))
     if scope not in ('all','b1','abc'):raise ValueError('Unknown capture scope')
     batches=(1,) if scope=='b1' else tuple(range(1,9))
     widths=(5,3) if scope=='all' else (5,)
@@ -75,6 +108,20 @@ def validate_costs(costs,identity):
         for k in (3,5):
             v=rows.get(str(b),{}).get(str(k))
             if type(v) not in (int,float) or not math.isfinite(v) or v<=0: raise ValueError('Missing/invalid B/k cost')
+    return rows
+
+
+def validate_policy_costs(costs,identity,profile):
+    rows=validate_costs(costs,identity)
+    if profile not in PROFILES:raise ValueError('Unknown measured-cost profile')
+    p=PROFILES[profile]
+    if profile.startswith('GN-'):
+        c=costs.get('context')
+        if not isinstance(c,dict) or c.get('target_family')!=list(p.family()):raise ValueError('Measured target family differs')
+        if any(type(c.get(k)) is not bool or c[k]!=getattr(p,k) for k in ('fp8_draft','fused_markov','gate')):raise ValueError('Measured sampler/gate context differs')
+        if c.get('draft_tokens')!=5:raise ValueError('Measured full proposal width differs')
+        pin=c.get('calibration_prompt_sha256','')
+        if len(pin)!=64 or set(pin)-set('0123456789abcdef'):raise ValueError('Missing measured prompt identity')
     return rows
 
 def validate_routes(r,identity):

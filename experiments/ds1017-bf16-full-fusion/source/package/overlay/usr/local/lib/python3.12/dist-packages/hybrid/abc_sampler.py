@@ -71,7 +71,7 @@ class Integrated(_Captured):
             abc_gate.publish(self.keep,self.b)
         return out
 
-def prepare(p,nccl,start,end,b,fp8,fused,gate,q8,consensus):
+def prepare(p,nccl,start,end,b,fp8,fused,gate,q8,consensus,*,pool=None):
     state=Integrated(p,nccl,start,end,b,fp8,fused,gate,q8)
     idx=p._anchor_idx[:b].clone();saved=p.input_ids[idx].clone()
     # Reuse the initial-capture stream/CUBLAS scratch. Graph pools, static
@@ -82,7 +82,7 @@ def prepare(p,nccl,start,end,b,fp8,fused,gate,q8,consensus):
         for _ in range(2):state.chain()
     stream.synchronize()
     state.graph=torch.cuda.CUDAGraph(keep_graph=True)
-    with torch.cuda.graph(state.graph,stream=stream):state.output=state.chain()
+    with torch.cuda.graph(state.graph,stream=stream,pool=pool):state.output=state.chain()
     state.graph.instantiate();state.ready=True
     records=[];first=None
     try:
@@ -105,3 +105,46 @@ def prepare(p,nccl,start,end,b,fp8,fused,gate,q8,consensus):
         p.input_ids.index_copy_(0,idx,saved);torch.cuda.synchronize()
     return state,dict(ready=True,fp8_draft=fp8,fused=fused,gate=gate,capture_stream=int(stream.cuda_stream),records=records,target_head_replaced=False,model_quality_verified=False)
 
+
+@torch.inference_mode()
+def qualify_interleaved(p,states,consensus):
+    """Exercise arbitrary serialized replay order and retained output ownership.
+
+    Integrated graphs share scratch only. Inputs/anchors and the FP8 weights
+    remain separately owned. Every returned token tensor is cloned before the
+    next graph runs; gate publication completes in the same serving stream.
+    RNG-bearing sampled graphs keep their own existing pool and generator.
+    """
+    from . import abc_gate as G
+    states=list(states)
+    if not states:raise ValueError('No integrated samplers to qualify')
+    idx=p._anchor_idx[:max(s.b for s in states)].clone()
+    saved=p.input_ids[idx].clone();expected=[];held=[];records=[]
+    try:
+        # Separate generators keep this proof out of serving RNG state.
+        fixtures=[]
+        for i,state in enumerate(states):
+            gen=torch.Generator(device=p.device).manual_seed(27017+i)
+            hidden=torch.randn(state.hidden.shape,device=p.device,dtype=torch.bfloat16,generator=gen)
+            anchor=(torch.arange(state.b,device=p.device,dtype=p.input_ids.dtype)*7919+27017+i)%129280
+            fixtures.append((hidden,anchor))
+            p.input_ids.index_copy_(0,idx[:state.b],anchor);G.reset()
+            out=state.sample(hidden)
+            expected.append((out.clone(),None if not state.gate else state.keep.clone()))
+            held.append(out)
+        orders=[list(reversed(range(len(states)))),list(range(1,len(states)))+[0]]
+        for order_id,order in enumerate(orders):
+            for i in order:
+                state=states[i];hidden,anchor=fixtures[i]
+                p.input_ids.index_copy_(0,idx[:state.b],anchor);G.reset()
+                actual=state.sample(hidden);ref,keep=expected[i]
+                exact=torch.equal(actual,ref)
+                gate_exact=not state.gate or (torch.equal(state.keep,keep) and torch.equal(G.MASK[G.INDICES[state.b]],keep.reshape(-1)))
+                owned=all(torch.equal(value,exp[0]) for value,exp in zip(held,expected))
+                ok=bool(exact and gate_exact and owned)
+                votes=consensus(dict(ok=ok,phase=('abc_sampler_interleave',order_id,i,state.b,state.gate)))
+                if not all(v==votes[0] and v['ok'] for v in votes):raise RuntimeError('Shared sampler scratch replay/ownership proof failed')
+                records.append(dict(order=order_id,index=i,b=state.b,gate=state.gate,ids_exact=exact,gate_exact=gate_exact,retained_outputs_exact=owned))
+    finally:
+        p.input_ids.index_copy_(0,idx,saved);G.reset();torch.cuda.synchronize()
+    return dict(passed=True,cases=len(records),samplers=len(states),arbitrary_order_bitwise=True,retained_outputs_owned=True,records=records)

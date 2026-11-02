@@ -5,7 +5,9 @@ environment reaches every worker). Without it nothing here is imported and every
 incumbent one. Even when armed, the drafter follows the serving split. One unseeded request
 with temperature above zero drafts at T_q=1. A batch of two or more stays
 greedy, and so does temperature zero, a seed, or structured output. The
-request flag does not override that split. A step that still needs nothing
+legacy draft-temperature flag does not override that split. The explicit
+``dsv41_proposal_policy="greedy"`` test flag keeps target sampling unchanged and
+uses greedy proposals for a single random row. A step that still needs nothing
 builds no plan, and the drafter, bank, rejection sampler and graphs run
 exactly as before.
 
@@ -17,6 +19,7 @@ the verify batch.
 
 Request flags (``extra_args``):
   dsv41_draft_tq    float, 0 < T_q <= 100   sampled drafting at draft temperature T_q
+  dsv41_proposal_policy  "greedy"           test greedy proposals; default/unknown keeps serving split
   dsv41_glog        1                       proposal-overlap logger (gate G3)
   dsv41_glog_every  int >= 1 (default 8)    positions >= 1 logged every Nth verify step
   dsv41_trace       1 or 2                  per-step GPU timing (gate G2); 2 also dumps kernels
@@ -50,6 +53,7 @@ OUT_DIR = os.environ.get("DSV41_R1_OUT") or None
 ROUNDLOG = os.environ.get("DSV41_R1_ROUNDLOG") == "1"
 
 KEY_TQ = "dsv41_draft_tq"
+KEY_PROPOSAL_POLICY = "dsv41_proposal_policy"
 KEY_GLOG = "dsv41_glog"
 KEY_GLOG_EVERY = "dsv41_glog_every"
 KEY_TRACE = "dsv41_trace"
@@ -121,10 +125,11 @@ class RequestFlags:
     glog_every: int = GLOG_EVERY_DEFAULT
     trace: int = 0
     xcheck: bool = False
+    force_greedy: bool = False
 
     @property
     def any(self) -> bool:
-        return self.tq is not None or self.glog or self.trace > 0 or self.xcheck
+        return self.tq is not None or self.glog or self.trace > 0 or self.xcheck or self.force_greedy
 
 
 NO_FLAGS = RequestFlags()
@@ -139,6 +144,7 @@ def flags_from_extra(extra) -> RequestFlags:
         glog_every=parse_int(extra, KEY_GLOG_EVERY, GLOG_EVERY_DEFAULT, 1, GLOG_EVERY_MAX),
         trace=parse_level(extra, KEY_TRACE, 2),
         xcheck=parse_level(extra, KEY_XCHECK) > 0,
+        force_greedy=(type(extra.get(KEY_PROPOSAL_POLICY)) is str and extra[KEY_PROPOSAL_POLICY] == "greedy"),
     )
     return flags if flags.any else NO_FLAGS
 
@@ -241,6 +247,7 @@ def build_draft_plan(
     gen_rows = set(generator_rows)
     tq, kinds, glog_rows = [], [], []
     xcheck = False
+    forced_random_single = False
     for row, (req_id, sp) in enumerate(zip(req_ids, sampling_params)):
         flags = flag_cache.get(req_id, sp)
         kind = row_kind(sp, row in gen_rows)
@@ -248,12 +255,13 @@ def build_draft_plan(
         # One unseeded temperature>0 request samples at T_q=1. Two or more
         # requests stay greedy even if the client sent dsv41_draft_tq.
         # Temperature 0, seeded, and structured rows stay greedy.
-        tq.append(1.0 if (kind == "random" and len(req_ids) == 1) else 0.0)
+        forced_random_single = forced_random_single or (flags.force_greedy and kind == "random" and len(req_ids) == 1)
+        tq.append(1.0 if (kind == "random" and len(req_ids) == 1 and not flags.force_greedy) else 0.0)
         glog_rows.append(bool(glog_enabled and flags.glog and kind != "greedy"))
         xcheck = xcheck or flags.xcheck
     any_sample = any(t > 0.0 for t in tq)
     any_glog = any(glog_rows)
-    if not (any_sample or any_glog or xcheck or mark is not None):
+    if not (any_sample or any_glog or xcheck or mark is not None or forced_random_single):
         return None
     return DraftPlan(
         req_ids=list(req_ids),
